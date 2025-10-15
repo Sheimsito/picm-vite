@@ -252,18 +252,6 @@ picm-vite/
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## 👥 Equipo
-
-- **Desarrollador Principal**: [Tu Nombre]
-- **Backend**: [Equipo Backend]
-- **Diseño**: [Equipo de Diseño]
-
-## 📞 Contacto
-
-- **Email**: [tu-email@ejemplo.com]
-- **Proyecto**: [URL del repositorio]
-- **Issues**: [URL de issues del proyecto]
-
 ---
 
 **Desarrollado con ❤️ para StayAwayCo - PICM System**
