@@ -3,7 +3,7 @@ export const API_CONFIG = {
     // URL of the API
     BASE_URL: {
       development: 'http://localhost:8000/api', // Typical port for Django
-      production: 'https://picm-server.onrender.com/api', // Production domain
+      production: 'https://picm-django-rest.onrender.com/api', // Production domain
       staging: 'https://staging.tu-dominio.com/api', // Staging domain
     },
     
