@@ -1,4 +1,4 @@
-import { getBaseURL, API_CONFIG } from '../config/apIConfig.js';
+import { getBaseURL, API_CONFIG } from '../config/apiConfig.js';
 
 class ApiClient {
   constructor() {
@@ -18,13 +18,13 @@ class ApiClient {
       ...options
     };
 
-    // Token de Django REST Framework
+  
     const token = this.getAuthToken();
     if (token) {
-      config.headers.Authorization = `Token ${token}`; // Django usa 'Token' no 'Bearer'
+      config.headers.Authorization = `Token ${token}`; 
     }
 
-    // CSRF Token para Django (si lo necesitas)
+
     const csrfToken = this.getCSRFToken();
     if (csrfToken) {
       config.headers['X-CSRFToken'] = csrfToken;
@@ -50,7 +50,7 @@ class ApiClient {
     }
   }
 
-  // Métodos HTTP
+  // HTTP Methods
   async get(endpoint, options = {}) {
     return this.request(endpoint, { ...options, method: 'GET' });
   }

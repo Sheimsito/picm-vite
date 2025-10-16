@@ -1,4 +1,4 @@
-/* Notificaciones */
+/* Notifications */
 .notifications-container {
     position: fixed;
     top: 80px;
@@ -71,7 +71,7 @@
     background-color: #f0f0f0;
 }
 
-/* Tipos de notificación */
+/* Notification types */
 .notification-success {
     border-left-color: #10b981;
 }
@@ -108,10 +108,6 @@
     color: white;
 }
 
-/* Posiciones */
-.notification-top-right {
-    /* Ya está en .notifications-container */
-}
 
 .notification-top-left {
     top: 20px;
@@ -132,7 +128,7 @@
     right: auto;
 }
 
-/* Animaciones */
+/* Animations */
 @keyframes slideInRight {
     from {
         transform: translateX(100%);

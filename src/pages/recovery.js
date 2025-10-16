@@ -40,7 +40,7 @@ export const Recovery = {
         const button = document.getElementById('recover-password-button');
         
         
-        // Función para validar campos en tiempo real
+        // Function to validate fields in real time
         const validateFields = () => {
             const email = emailInput.value.trim();
             
@@ -51,10 +51,10 @@ export const Recovery = {
             }
         };
 
-        // Validar campos cuando el usuario escribe
+        // Validate fields when the user writes
         emailInput.addEventListener('input', validateFields);
 
-        // Validar campos al cargar la página
+        // Validate fields when the page is loaded
         validateFields();
   
         form.addEventListener('submit', async (event) => {
@@ -62,16 +62,16 @@ export const Recovery = {
             
             const email = emailInput.value.trim();
                    
-            // Deshabilitar el botón durante la petición
+            // Disable the button during the request
             button.disabled = true;
             button.innerHTML = '<span class= "loader"></span> Enviando correo de recuperación...';
             
             try {
                 
-                // Llamada a la API
+                // Call to the API
                 const response = await AuthService.resetPassword({ email });
                 console.log(response);
-                // Mostrar notificación de éxito
+                // Show success notification
                 Notification.show('¡Se ha enviado un correo para reestablecer tu contraseña!', 'success', {
                     duration: 3000
                 });

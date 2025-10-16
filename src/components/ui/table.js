@@ -2,12 +2,12 @@ export const Table = {
     render({
         headers = [],
         body = [],
-        dataFields = [], // Array de propiedades del objeto a mostrar en cada columna
+        dataFields = [], // Array of object properties to display in each column
         striped = false,
         bordered = false,
         hover = false,
         responsive = false,
-        size = '', // 'sm', 'lg'
+        size = '', // 'sm', 'lg', 'xl'
         variant = '', // 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
         className = '',
         caption = '',
@@ -16,7 +16,7 @@ export const Table = {
         filters = [],
         filterValues = [],
         showCheckboxes = false,
-        // Parámetros de paginación
+        // Pagination parameters
         showPagination = false,
         itemsPerPage = 10,
         currentPage = 1,
@@ -25,7 +25,7 @@ export const Table = {
 
     }){
         
-        // Construir clases base de la tabla
+        // Build base table classes
         let tableClasses = [
             'w-full',
             'text-sm',
@@ -34,7 +34,7 @@ export const Table = {
             'dark:text-gray-400'
         ];
         
-        // Agregar clases según las opciones
+        // Add classes according to the options
         if (striped) tableClasses.push('table-auto');
         if (bordered) tableClasses.push('border-collapse', 'border', 'border-gray-300');
         if (hover) tableClasses.push('hover:bg-gray-50');
@@ -46,7 +46,7 @@ export const Table = {
         
         const tableClassString = tableClasses.join(' ');
         
-        // Lógica de paginación
+        // Pagination logic
         let paginatedBody = body;
         let totalPages = 1;
         
@@ -55,7 +55,7 @@ export const Table = {
             totalPages = Math.ceil(totalItems / itemsPerPage);
         }
         
-        // Construir header de la tabla
+        // Build table header
         const tableHeader = headers.length > 0 ? `
             <thead class="text-xs text-white uppercase bg-[var(--color-primary)]">
                 <tr>
@@ -65,7 +65,7 @@ export const Table = {
             </thead>
         ` : '';
         
-        // Construir body de la tabla
+        // Build table body
         const tableBody = paginatedBody.length > 0 ? `
             <tbody class="bg-white divide-y">
                 ${paginatedBody.map((row, index) => {
@@ -78,12 +78,12 @@ export const Table = {
                         'hover:bg-gray-50'
                     ].filter(Boolean).join(' ');
                     
-                    // Función para extraer el valor de una celda
+                    // Function to extract the value of a cell
                     const getCellValue = (rowData, cellIndex) => {
                         if (Array.isArray(rowData)) {
                             return rowData[cellIndex] || '';
                         } else if (typeof rowData === 'object' && rowData !== null) {
-                            // Si es un objeto, intentar mapear a las propiedades basándose en el índice
+                            // If it is an object, try to map to the properties based on the index
                             const objectKeys = Object.keys(rowData);
                             return rowData[objectKeys[cellIndex]] || '';
                         } else {
@@ -91,7 +91,7 @@ export const Table = {
                         }
                     };
                     
-                    // Función para renderizar celdas
+                    // Function to render cells
                     const renderCells = () => {
                         if (Array.isArray(row)) {
                             return row.map((cell, cellIndex) => 
@@ -100,23 +100,23 @@ export const Table = {
                                     : `<td class="px-6 py-4">${cell}</td>`
                             ).join('');
                         } else if (typeof row === 'object' && row !== null) {
-                            // Si es un objeto y se especificaron dataFields, usar esos campos
+                                // If it is an object and dataFields are specified, use those fields
                             if (dataFields.length > 0) {
                                 return dataFields.map((field, cellIndex) => {
                                     const value = row[field] !== null && row[field] !== undefined ? row[field] : '';
-                                    // Si el valor contiene HTML (como botones), renderizarlo tal como está
+                                    // If the value contains HTML (like buttons), render it as is
                                     const isHTML = typeof value === 'string' && (value.includes('<button') || value.includes('<a') || value.includes('<div'));
                                     return cellIndex === 0 
                                         ? `<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-black">${isHTML ? value : value}</th>` 
                                         : `<td class="px-6 py-4">${isHTML ? value : value}</td>`;
                                 }).join('');
                             } else {
-                                // Si no se especificaron dataFields, usar todas las propiedades del objeto
+                                // If dataFields are not specified, use all the properties of the object
                                 const objectKeys = Object.keys(row);
                                 return objectKeys.map((key, cellIndex) => {
                                     const value = row[key];
                                     const displayValue = value !== null && value !== undefined ? value : '';
-                                    // Si el valor contiene HTML (como botones), renderizarlo tal como está
+                                    // If the value contains HTML (like buttons), render it as is
                                     const isHTML = typeof displayValue === 'string' && (displayValue.includes('<button') || displayValue.includes('<a') || displayValue.includes('<div'));
                                     return cellIndex === 0 
                                         ? `<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-black">${displayValue}</th>` 
@@ -145,7 +145,7 @@ export const Table = {
             </tbody>
         ` : '';
         
-        // Construir controles superiores (búsqueda y filtros)
+        // Build top controls (search and filters)
         const controls = (showSearch || showFilters ) ? `
             <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
                 <div class="flex items-center space-x-4">
@@ -187,7 +187,7 @@ export const Table = {
 
 
         
-        // Construir paginación
+        // Build pagination
         const pagination = showPagination && totalPages > 1 ? `
             <div class="flex items-center justify-between pt-4">
                 <div class="flex items-center text-sm text-gray-700 dark:text-gray-400">
@@ -201,7 +201,7 @@ export const Table = {
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                    <!-- Botón Anterior -->
+                    <!-- Previous button -->
                     <button 
                         class="flex items-center px-3 py-2 text-sm font-medium text-black bg-white border border-gray-300 rounded-lg hover:bg-gray-100  dark:border-gray-700 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
                         ${currentPage === 1 ? 'disabled' : ''}
@@ -213,7 +213,7 @@ export const Table = {
                         Anterior
                     </button>
                     
-                    <!-- Números de página -->
+                    <!-- Page numbers -->
                     <div class="flex items-center space-x-1">
                         ${Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                             let pageNum;
@@ -241,7 +241,7 @@ export const Table = {
                         }).join('')}
                     </div>
                     
-                    <!-- Botón Siguiente -->
+                    <!-- Next button -->
                     <button 
                         class="flex items-center px-3 py-2 text-sm font-medium text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-100  dark:border-gray-200 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
                         ${currentPage === totalPages ? 'disabled' : ''}
@@ -256,14 +256,14 @@ export const Table = {
             </div>
         ` : '';
         
-        // Construir contenido completo de la tabla
+        // Build complete table content
         const tableContent = `
             ${caption ? `<caption class="text-left text-gray-900 font-medium mb-2">${caption}</caption>` : ''}
             ${tableHeader}
             ${tableBody}
         `;
         
-        // Si es responsive, envolver en div
+        // If responsive, wrap in a div
         if (responsive) {
             return `
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg ">
