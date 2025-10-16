@@ -1,19 +1,19 @@
-// Configuración para Django REST Framework
+// Configuration for the API
 export const API_CONFIG = {
-    // URL de tu API de Django
+    // URL of the API
     BASE_URL: {
-      development: 'http://localhost:8000/api', // Puerto típico de Django
-      production: 'https://tu-dominio.com/api',
-      staging: 'https://staging.tu-dominio.com/api'
+      development: 'http://localhost:8000/api', // Typical port for Django
+      production: 'https://tu-dominio.com/api', // Production domain
+      staging: 'https://staging.tu-dominio.com/api', // Staging domain
     },
     
     TIMEOUT: 10000,
     
-    // Headers específicos para Django REST
+    // Specific headers for Django REST
     DEFAULT_HEADERS: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest' // Para Django CSRF
+      'X-Requested-With': 'XMLHttpRequest' // For Django CSRF
     }
   };
   

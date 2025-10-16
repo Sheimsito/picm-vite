@@ -16,7 +16,7 @@ export const Modal = {
         showSubmitButton = false,
         className = ''
     }){
-        // Clases de tamaño
+        // Size classes
         const sizeClasses = {
             sm: 'max-w-sm',
             md: 'max-w-md',
@@ -24,7 +24,7 @@ export const Modal = {
             xl: 'max-w-xl'
         };
 
-        // Clases de variante
+        // Variant classes
         const variantClasses = {
             default: 'border-gray-200',
             success: 'border-green-500',
@@ -32,7 +32,7 @@ export const Modal = {
             danger: 'border-red-500'
         };
 
-        // Construir inputs dinámicamente
+        // Build inputs dynamically
         const inputsHTML = inputs.map((input, index) => `
             <div class="mb-4">
                 <label for="${input.id || `input-${index}`}" class="block text-sm font-medium text-black mb-2">
@@ -120,25 +120,25 @@ export const Modal = {
     },
     
     init(){
-        // Función global para cerrar modal
+        // Global function to close modal
         window.closeModal = () => {
             const modal = document.querySelector('.fixed.inset-0.z-50');
             if (modal) {
-                // Limpiar función onSubmit si existe
+                // Clean onSubmit function if exists
                 if (modal.dataset.onSubmit) {
                     delete window[modal.dataset.onSubmit];
                 }
                 
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-                // Remover el modal del DOM después de la animación
+                // Remove the modal from the DOM after the animation
                 setTimeout(() => {
                     modal.remove();
                 }, 300);
             }
         };
 
-        // Función global para submit modal
+        // Global function to submit modal
         window.submitModal = async () => {
             const form = document.getElementById('modal-form');
             if (form) {
@@ -146,40 +146,40 @@ export const Modal = {
                 const data = Object.fromEntries(formData);
                 console.log('Form data:', data);
                 
-                // Obtener la función onSubmit del modal actual
+                // Get the onSubmit function from the current modal
                 const modal = document.querySelector('.fixed.inset-0.z-50');
                 if (modal && modal.dataset.onSubmit) {
                     try {
-                        // Ejecutar la función onSubmit del dashboard
+                        // Execute the onSubmit function from the dashboard
                         await window[modal.dataset.onSubmit](data);
                     } catch (error) {
                         console.error('Error en onSubmit:', error);
                     }
                 } else {
-                    // Fallback: cerrar modal si no hay función onSubmit
+                    // Fallback: close modal if there is no onSubmit function
                     window.closeModal();
                 }
             }
         };
-        // Cerrar modal al hacer clic en el botón de cerrar
+        // Close modal when clicking the close button
         const buttonCancel = document.getElementById('close-modal');
         if (buttonCancel) {
             buttonCancel.addEventListener('click', () => {
                 window.closeModal();
             });
         }
-        // Obtener el modal actual
+        // Get the current modal
         const modal = document.querySelector('.fixed.inset-0.z-50');
         if (!modal) return;
 
-        // Cerrar modal al hacer clic en el backdrop
+        // Close modal when clicking the backdrop / background
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
                 window.closeModal();
             }
         });
 
-        // Cerrar modal con tecla Escape
+        // Close modal with the Escape key
         const handleEscape = (event) => {
             if (event.key === 'Escape') {
                 window.closeModal();
@@ -190,18 +190,18 @@ export const Modal = {
         document.addEventListener('keydown', handleEscape);
     },
 
-    // Método para mostrar modal
+    // Method to show modal
     show(options = {}){
-        // Remover modal existente si existe
+        // Remove existing modal if exists
         const existingModal = document.querySelector('.fixed.inset-0.z-50');
         if (existingModal) {
             existingModal.remove();
         }
         
-        // Generar un ID único para la función onSubmit
+        // Generate a unique ID for the onSubmit function
         const onSubmitId = 'onSubmit_' + Date.now();
         
-        // Si hay una función onSubmit, registrarla globalmente
+        // If there is an onSubmit function, register it globally
         if (options.onSubmit && typeof options.onSubmit === 'function') {
             window[onSubmitId] = options.onSubmit;
         }
@@ -209,19 +209,19 @@ export const Modal = {
         const modalHTML = this.render({ ...options, show: true });
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         
-        // Agregar el ID de la función onSubmit al modal
+        // Add the ID of the onSubmit function to the modal
         const modal = document.querySelector('.fixed.inset-0.z-50');
         if (modal && options.onSubmit) {
             modal.dataset.onSubmit = onSubmitId;
         }
         
-        // Inicializar después de un pequeño delay para asegurar que el DOM esté listo
+        // Initialize after a small delay to ensure the DOM is ready
         setTimeout(() => {
             this.init();
         }, 10);
     },
 
-    // Método para ocultar modal
+    // Method to hide modal
     hide(){
         window.closeModal();
     }

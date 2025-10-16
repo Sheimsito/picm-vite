@@ -1,9 +1,9 @@
 import '../css/dashboard.css'
 import { AuthService } from '../api/services/authService.js'
 import { Notification } from '../components/ui/Notification.js'
-import { Table } from '../components/ui/table.js'
 import { Modal } from '../components/ui/modal.js'
 import { ProductService } from '../api/services/productService.js'
+import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
 
 export const Dashboard = {
     render(){
@@ -186,258 +186,76 @@ export const Dashboard = {
         const mainTitle = document.getElementById('main-title');
         const dashboardContent = document.getElementById('dashboard-content');
 
-        // Función para mostrar contenido según la sección
+        // Function to show content according to the section
         const showSection = async (section) => {
             mainTitle.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            
+            // Clean global variables to avoid conflicts between sections
+            if (window.handleTableSearch) {
+                window.handleTableSearch = null;
+            }
+            if (window.handleCategoryTableSearch) {
+                window.handleCategoryTableSearch = null;
+            }
+            
+            // Clean event listeners of the search input
+            const searchInput = document.getElementById('table-search-input');
+            if (searchInput) {
+                // Clone the element to remove all event listeners
+                const newSearchInput = searchInput.cloneNode(true);
+                searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+            }
             
             switch(section) {
                 case 'inicio':
                     dashboardContent.innerHTML = `
-                    <!-- Contenido de inicio Proximamente -->
+                        <div class="bg-white p-8 rounded-lg shadow-md text-center mt-[8rem]">
+                            <div class="mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-blue-500">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                    <polyline points="9,22 9,12 15,12 15,22"/>
+                                </svg>
+                            </div>
+                            <h2 class="text-3xl font-bold text-gray-900 mb-4">Bienvenido al Sistema PICM</h2>
+                            <p class="text-lg text-gray-600 mb-6">Sistema de gestión de inventario para cuadros de madera</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-blue-900">Productos</h3>
+                                    <p class="text-blue-700 text-sm">Gestiona tu inventario de productos</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-green-900">Categorías</h3>
+                                    <p class="text-green-700 text-sm">Organiza tus productos por categorías</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-purple-900">Reportes</h3>
+                                    <p class="text-purple-700 text-sm">Consulta estadísticas y reportes</p>
+                                </div>
+                            </div>
+                        </div>
                     `;
                     break;
                     
                 case 'productos':
-
-                    let currentSearchTerm = '';
-                    let currentFilter = ''; 
-                    let currentCategory = ''; 
-                    // Función para cargar productos con paginación
-                    const loadProducts = async (page, pageSize, search = '', filter = '', category = '') => {
-                        try {
-                            const response = await ProductService.getProducts(page, pageSize, search, filter, category);
-                          
-                            
-                            // Extraer datos de la respuesta paginada
-                            const productosData = response.results || response.data || response;
-                            const totalItems = response.count || productosData.length;
-                            const currentPage = page;
-                            const hasNext = response.next !== null;
-                            const hasPrevious = response.previous !== null;
-                            console.log(productosData);
-                            // Procesar los datos para agregar botones de acción
-                            const productosDataWithActions = productosData.map(producto => ({
-                                ...producto,
-                                acciones: `
-                                    <div class="flex space-x-2">
-                                        <button onclick="editProduct(${producto.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded ">Editar</button>
-                                        <button onclick="deleteProduct(${producto.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded ">Eliminar</button>
-                                    </div>
-                                `
-                            }));
-                            
-                            // Crear dataFields basándose en las propiedades disponibles
-                            let dataFields = [];
-                            if (productosDataWithActions.length > 0) {
-                                dataFields = Object.keys(productosDataWithActions[0]);
-                            }                      
-                            const productosTable = Table.render({
-                                headers: ['ID', 'Nombre', 'Descripción', 'Precio', 'Stock', 'Categoría', 'Acciones'],
-                                body: productosDataWithActions,
-                                dataFields: dataFields,
-                                striped: true,
-                                hover: true,
-                                responsive: false,
-                                showSearch: true,
-                                showFilters: true,
-                                filters: ['Stock bajo', 'Stock Alto', 'Precio bajo', 'Precio alto'],
-                                filterValues: ['low-stock', 'high-stock', 'low-price', 'high-price'],
-                                showCheckboxes: false,
-                                size: 'lg',
-                                variant: 'primary',
-                                // Parámetros de paginación
-                                showPagination: true,
-                                itemsPerPage: pageSize,
-                                currentPage: currentPage,
-                                totalItems: totalItems,
-                                onPageChange: (newPage) => {
-                                    console.log('Cambiando a página:', newPage);
-                                    loadProducts(newPage, 5);
-                                }
-                            });           
-                            return productosTable;
-                        } catch (error) {
-                            console.error('Error al cargar productos:', error);
-                            return '<p class="text-red-500">Error al cargar los productos</p>';
-                        }
-                    };
+               
+                    const productsConfig = SectionFactory.createProductsSection(ProductService);
+                    const productsManager = new SectionManager(productsConfig);
                     
-                    // Cargar productos iniciales
-                    const productosTable = await loadProducts(1, 5);
-                    const totalProducts = await ProductService.getTotalProducts();
-                    const totalValue = await ProductService.getTotalValue();
-                    const colombianFormat = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
-                    const safeValue = Number(totalValue) || 0;
 
-                    // Función para actualizar el contenido del dashboard
-                    const updateDashboardContent = (tableHTML, totalProducts, totalValue) => {
-                        console.log(totalProducts)
-                        console.log(totalValue)
-                        dashboardContent.innerHTML = 
-                        `
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-6xl mt-[2rem] mb-[1rem]">
-                            <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Productos</h3>
-                                <p class="text-3xl font-bold text-primary">${totalProducts}</p>
-                            </div>
-                            <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Valor Total del Inventario</h3>
-                                <p class="text-3xl font-bold text-success">${colombianFormat.format(safeValue)}</p>
-                            </div>
-                        </div>
+                    window.changePage = (newPage) => productsManager.changePage(newPage);
                     
-                        <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
-                            <button id="agregar-producto" onclick="openAddProductModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Producto</button>
-                        </div>
-                        ${tableHTML}
-                        `;
-                    };
-                    
-                    // Actualizar contenido inicial
-                    updateDashboardContent(productosTable, totalProducts, colombianFormat.format(safeValue));
-
-                    // Después de la función updateDashboardContent (línea 316), agrega esta nueva función:
-
-                    const attachEventListeners = () => {
-                        const filterSelect = document.getElementById('filter-select');
-                        const categoryInput = document.getElementById('category-input');
-                        const applyFiltersBtn = document.getElementById('apply-filters');
-                        const clearFiltersBtn = document.getElementById('clear-filters');
-                        const searchInput = document.getElementById('table-search-input');
-
-                        
-                        // Aplicar filtros
-                        if (applyFiltersBtn) {
-                            applyFiltersBtn.addEventListener('click', async () => {
-                                currentFilter = filterSelect.value;
-                                currentCategory = categoryInput.value;
-                              
-                                const newTable = await loadProducts(1, 5, currentSearchTerm, currentFilter, currentCategory);
-                                console.log(newTable);
-                                updateDashboardContent(newTable, totalProducts, colombianFormat.format(safeValue));
-                                
-                                // Restaurar valores y reattach listeners
-                                setTimeout(() => {
-                                    document.getElementById('filter-select').value = currentFilter;
-                                    document.getElementById('category-input').value = currentCategory;
-                                    const searchInput = document.getElementById('table-search-input');
-                                    if (searchInput && currentSearchTerm) {
-                                        searchInput.value = currentSearchTerm;
-                                    }
-                                    attachEventListeners(); // ← RE-ATTACH aquí
-                                }, 50);
-                            });
-                        }
-                        
-                        // Limpiar filtros
-                        if (clearFiltersBtn) {
-                            clearFiltersBtn.addEventListener('click', async () => {
-                                currentFilter = '';
-                                currentCategory = '';
-                                currentSearchTerm = '';
-                                
-                                const newTable = await loadProducts(1, 5, '', '', '');
-                                updateDashboardContent(newTable, totalProducts, colombianFormat.format(safeValue));
-                                
-                                setTimeout(() => {
-                                    attachEventListeners(); // ← RE-ATTACH aquí
-                                }, 50);
-                            });
-                        }
-                        
-                        // Event listener para búsqueda
-                        if (searchInput) {
-                            searchInput.addEventListener('input', (e) => {
-                                window.handleTableSearch(e.target.value);
-                            });
-                        }
-                    };
-
-                    // Actualizar contenido inicial
-                    updateDashboardContent(productosTable, totalProducts, colombianFormat.format(safeValue));
-
-                    // Llamar a attachEventListeners por primera vez
-                    setTimeout(() => {
-                        attachEventListeners();
-                    }, 100);
-                    // Función mejorada para cambiar página que actualiza el contenido
-                    window.changePage = async (newPage) => {
-                        const newTable = await loadProducts(newPage, 5, currentSearchTerm, currentFilter, currentCategory);
-                        updateDashboardContent(newTable, totalProducts, colombianFormat.format(safeValue));
-                        
-                        // Restaurar valores y reattach
-                        setTimeout(() => {
-                            document.getElementById('filter-select').value = currentFilter;
-                            document.getElementById('category-input').value = currentCategory;
-                            const searchInput = document.getElementById('table-search-input');
-                            if (searchInput && currentSearchTerm) {
-                                searchInput.value = currentSearchTerm;
-                            }
-                            attachEventListeners(); // ← RE-ATTACH aquí
-                        }, 50);
-                    };
-                    
-                    window.handleTableSearch = async (searchTerm) => {
-                        currentSearchTerm = searchTerm;
-                        
-                        if (searchTimeout) {
-                            clearTimeout(searchTimeout);
-                        }
-                        
-                        searchTimeout = setTimeout(async () => {
-                            console.log('Buscando:', searchTerm);
-                            const newTable = await loadProducts(1, 5, searchTerm, currentFilter, currentCategory);
-                            updateDashboardContent(newTable, totalProducts, colombianFormat.format(safeValue));
-                            
-                            // Restaurar valores y reattach
-                            setTimeout(() => {
-                                document.getElementById('filter-select').value = currentFilter;
-                                document.getElementById('category-input').value = currentCategory;
-                                const searchInput = document.getElementById('table-search-input');
-                                if (searchInput) {
-                                    searchInput.value = currentSearchTerm;
-                                    searchInput.focus();
-                                }
-                                attachEventListeners(); // ← RE-ATTACH aquí
-                            }, 50);
-                        }, 500);
-                    };
-
-                    let searchTimeout = null;
-
-                    window.handleTableSearch = async (searchTerm) => {
-                        currentSearchTerm = searchTerm;
-                        
-                        if (searchTimeout) {
-                            clearTimeout(searchTimeout);
-                        }
-                        
-                        searchTimeout = setTimeout(async () => {
-                            console.log('Buscando:', searchTerm);
-                            const newTable = await loadProducts(1, 5, searchTerm, currentFilter, currentCategory);
-                            updateDashboardContent(newTable, totalProducts, colombianFormat.format(safeValue));
-                            
-                            // Restaurar valores
-                            setTimeout(() => {
-                                document.getElementById('filter-select').value = currentFilter;
-                                document.getElementById('category-input').value = currentCategory;
-                                const searchInput = document.getElementById('table-search-input');
-                                if (searchInput) {
-                                    searchInput.value = currentSearchTerm;
-                                    searchInput.focus();
-                                }
-                            }, 50);
-                        }, 500);
-                    };
+                    await productsManager.init();
                     break;
                     
                 case 'categorias':
-                    dashboardContent.innerHTML = `
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Categorías</h3>
-                            <p class="text-gray-600">Contenido de categorías próximamente...</p>
-                        </div>
-                    `;
+               
+                    const categoriesConfig = SectionFactory.createCategoriesSection(ProductService);
+                    const categoriesManager = new SectionManager(categoriesConfig);
+                    
+            
+                    window.changePage = (newPage) => categoriesManager.changePage(newPage);
+                    
+                    await categoriesManager.init();
                     break;
                     
                 case 'insumos':
@@ -481,18 +299,18 @@ export const Dashboard = {
             }
         };
 
-        // Agregar event listeners a los botones de navegación
+        // Add event listeners to the navigation buttons
         navButtons.forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
                 
-                // Remover clase activa de todos los botones
+                // Remove active class from all buttons
                 navButtons.forEach(btn => btn.classList.remove('active'));
                 
-                // Agregar clase activa al botón clickeado
+                // Add active class to the clicked button
                 button.classList.add('active');
                 
-                // Obtener la sección del atributo data-section
+                // Get the section from the data-section attribute
                 const section = button.getAttribute('data-section');
                 if (section) {
                     showSection(section);
@@ -500,7 +318,70 @@ export const Dashboard = {
             });
         });
 
-        // Funciones globales para acciones de productos
+        // Global functions for product actions
+        window.openAddProductModal = async () => {
+            const selectOptions = await ProductService.getCategories()
+            Modal.show({
+                title: 'Agregar Producto',
+                inputs: [{
+                    title: 'Nombre',
+                    type: 'text',
+                    placeholder: 'Ingrese el nombre del producto',
+                    name: 'nombre',
+                    id: 'nombre'
+                },
+                {
+                    title: 'Descripción',
+                    type: 'text',
+                    placeholder: 'Ingrese la descripción del producto',
+                    name: 'descripcion',
+                    id: 'descripcion'
+                },
+                {
+                    title: 'Precio',
+                    type: 'number',
+                    placeholder: 'Ingrese el precio del producto',
+                    name: 'precio',
+                    id: 'precio'
+                },
+                {
+                    title: 'Categoría',
+                    type: 'select',
+                    placeholder: 'Seleccione la categoría del producto',
+                    name: 'categoria',
+                    id: 'categoria'
+                }
+                ],
+                selectOptions: selectOptions,
+                showSubmitButton: true,
+                submitText: 'Guardar',
+                closeText: 'Cancelar',
+                size: 'lg',
+                onSubmit: async () => {
+                    try {
+                        const data = {
+                            nombre: document.getElementById('nombre').value,
+                            descripcion: document.getElementById('descripcion').value,
+                            precio: document.getElementById('precio').value,
+                            categoria: document.getElementById('categoria').value,
+                        }                    
+                        await ProductService.createProduct(data);
+                        Notification.show('Producto guardado correctamente', 'success', {
+                            duration: 1100
+                        });
+                        window.closeModal();
+                        // Reload the products table
+                        showSection('productos');
+                    } catch (error) {
+                        Notification.show('Error al guardar el producto: ' + error.message, 'error', {
+                            duration: 4000
+                        });
+                    }
+                }
+
+            });
+        };
+        
         window.editProduct = async (id) => {
             const {name,description,price} = await ProductService.getProductById(id)
             const selectOptions = await ProductService.getCategories()
@@ -557,7 +438,7 @@ export const Dashboard = {
                             duration: 1100
                         });
                         window.closeModal();
-                        // Recargar la tabla de productos
+                        // Reload the products table
                         showSection('productos');
                     } catch (error) {
                         Notification.show('Error al actualizar el producto: ' + error.message, 'error', {
@@ -577,7 +458,7 @@ export const Dashboard = {
                 Notification.show('Producto eliminado correctamente', 'success', {
                     duration: 2000
                 });
-                // Recargar la tabla de productos
+                // Reload the products table
                 showSection('productos');
             } catch (error) {
                 Notification.show('Error al eliminar el producto: ' + error.message, 'error', {
@@ -587,72 +468,123 @@ export const Dashboard = {
             }
         };
 
-        // Función global para abrir modal de agregar producto
-        window.openAddProductModal = async () => {
-            const selectOptions = await ProductService.getCategories()
+
+        // Global functions for category actions
+        window.editCategory = async (id) => {
+            try {
+                const {name,description} = await ProductService.getCategoriesById(id);
+                Modal.show({
+                    title: 'Editar Categoría',
+                    inputs: [{
+                        title: 'Nombre',
+                        type: 'text',
+                        placeholder: 'Ingrese el nombre de la categoría',
+                        name: 'nombre',
+                        id: 'nombre',
+                        value: name || ''
+                            },
+                            {
+                        title: 'Descripción',
+                        type: 'text',
+                        placeholder: 'Ingrese la descripción de la categoría',
+                        name: 'descripcion',
+                        id: 'descripcion',
+                        value: description || ''
+                            }
+                    ],
+                    showSubmitButton: true,
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    onSubmit: async () => {
+                        try {
+                            const data = {
+                                nombre: document.getElementById('nombre').value,
+                                descripcion: document.getElementById('descripcion').value,
+                            }                    
+                            await ProductService.updateCategory(id, data);
+                            Notification.show('Categoría actualizada correctamente', 'success', {
+                                duration: 1100
+                            });
+                            window.closeModal();
+                            showSection('categorias');
+                        } catch (error) {
+                            Notification.show('Error al actualizar la categoría: ' + error.message, 'error', {
+                                duration: 4000
+                            });
+                        }
+                    }
+                });
+            } catch (error) {
+                Notification.show('Error al cargar la categoría: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        };
+
+        window.deleteCategory = async (id) => {
+            console.log('Eliminando categoría con ID:', id);
+            if (confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
+                try {
+                    await ProductService.deleteCategory(id);
+                    Notification.show('Categoría eliminada correctamente', 'success', {
+                        duration: 2000
+                    });
+                    showSection('categorias');
+                } catch (error) {
+                    Notification.show('Error al eliminar la categoría: ' + error.message, 'error', {
+                        duration: 4000
+                    });
+                }
+            }
+        };
+
+        window.openAddCategoryModal = async () => {
             Modal.show({
-                title: 'Agregar Producto',
+                title: 'Agregar Categoría',
                 inputs: [{
                     title: 'Nombre',
                     type: 'text',
-                    placeholder: 'Ingrese el nombre del producto',
+                    placeholder: 'Ingrese el nombre de la categoría',
                     name: 'nombre',
                     id: 'nombre'
                 },
                 {
                     title: 'Descripción',
                     type: 'text',
-                    placeholder: 'Ingrese la descripción del producto',
+                    placeholder: 'Ingrese la descripción de la categoría',
                     name: 'descripcion',
                     id: 'descripcion'
-                },
-                {
-                    title: 'Precio',
-                    type: 'number',
-                    placeholder: 'Ingrese el precio del producto',
-                    name: 'precio',
-                    id: 'precio'
-                },
-                {
-                    title: 'Categoría',
-                    type: 'select',
-                    placeholder: 'Seleccione la categoría del producto',
-                    name: 'categoria',
-                    id: 'categoria'
                 }
                 ],
-                selectOptions: selectOptions,
                 showSubmitButton: true,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
-                size: 'lg',
+                size: 'md',
                 onSubmit: async () => {
                     try {
                         const data = {
                             nombre: document.getElementById('nombre').value,
                             descripcion: document.getElementById('descripcion').value,
-                            precio: document.getElementById('precio').value,
-                            categoria: document.getElementById('categoria').value,
                         }                    
-                        await ProductService.createProduct(data);
-                        Notification.show('Producto guardado correctamente', 'success', {
+                        await ProductService.createCategory(data);
+                        Notification.show('Categoría guardada correctamente', 'success', {
                             duration: 1100
                         });
                         window.closeModal();
-                        // Recargar la tabla de productos
-                        showSection('productos');
+                        showSection('categorias');
                     } catch (error) {
-                        Notification.show('Error al guardar el producto: ' + error.message, 'error', {
+                        Notification.show('Error al guardar la categoría: ' + error.message, 'error', {
                             duration: 4000
                         });
                     }
                 }
-
             });
         };
 
 
-        // Mostrar sección inicial
+
+        // Show initial section
         showSection('inicio');
     }   
 };

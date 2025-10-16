@@ -2,13 +2,12 @@ import { apiClient } from '../utils/apiClient.js';
 import { ENDPOINTS } from '../constants/endpoints.js';
 
 export class AuthService {
-  // Login con Django REST Auth
   static async login(credentials) {
     try {
       const response = await apiClient.post(ENDPOINTS.AUTH.LOGIN, credentials);
       
-      // Django REST Auth devuelve el token directamente
-      if (response.key) { // Token key
+      // Django REST Auth returns the token directly
+      if (response.key) {
         apiClient.setAuthToken(response.key);
       }
       
@@ -29,7 +28,7 @@ export class AuthService {
     }
   }
 
-  // Obtener información del usuario
+  // Get user info
   static async getUserInfo() {
     try {
       return await apiClient.get(ENDPOINTS.AUTH.USER);
@@ -38,7 +37,7 @@ export class AuthService {
     }
   }
 
-  // Reset de contraseña
+  // Reset password
   static async resetPassword(email) {
     try {
       return await apiClient.post(ENDPOINTS.AUTH.PASSWORD_RESET, { email });
@@ -47,12 +46,12 @@ export class AuthService {
     }
   }
 
-  // Confirmar reset de contraseña
+  // Confirm reset password
   static async resetPasswordConfirm({ userId, newPassword, token }) {
     try {
       return await apiClient.post(ENDPOINTS.AUTH.PASSWORD_RESET_CONFIRM, { 
         uid: userId, 
-        token: token, // En un caso real, esto sería un token temporal
+        token: token, // In a real case, this would be a temporary token
         new_password: newPassword
       });
     } catch (error) {
@@ -60,7 +59,7 @@ export class AuthService {
     }
   }
 
-  // Verificar autenticación
+  // Verify authentication
   static isAuthenticated() {
     return !!apiClient.getAuthToken();
   }

@@ -1,39 +1,39 @@
-/* ===== ESTILOS GLOBALES ===== */
+/* ===== GLOBAL STYLES ===== */
 
-/* Reset y base */
+/* Reset and base */
 * {
     font-family: system-ui;
 
 }
 
-/* Variables CSS (unificadas) */
+/* Variables CSS (unified) */
 :root {
-    /* Colores principales */
+    /* Primary colors */
     --color-primary: #4F8CD9;
     --color-primary-hover: #9cc5f4a8;;
   
     
-    /* Fondos */
+    /* Backgrounds */
     --color-bg: #FFFFFF;
     --color-bg-secondary: #F5F7FA;
     
-    /* Texto */
+    /* Text */
     --color-text: #2E2E2E;
     --color-text-secondary: #6B6B6B;
     
-    /* Estados */
+    /* States */
     --color-success: #6ECF8E;
     --color-success-hover: #6ecf8e91;
     --color-error: #ec6e6e;
     --color-error-hover: #ec6e6e91;
     
-    /* Bordes y sombras */
+    /* Borders and shadows */
     --color-border: #E0E0E0;
     --shadow-soft: 0 2px 5px rgba(0, 0, 0, 0.05);
     --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);  
 }
 
-/* Base del body */
+/* Base of the body */
 body {
     height: 100vh;
     background-color: var(--color-bg);

@@ -46,11 +46,11 @@ export const Notification = {
             ...options
         });
         
-        // Agregar al DOM
+        // Add to the DOM
         const container = this.getContainer();
         container.insertAdjacentHTML('beforeend', notification);
         
-        // Auto-hide si está habilitado
+        // Auto-hide if enabled
         const notificationElement = container.lastElementChild;
         if (options.autoHide !== false) {
             setTimeout(() => {

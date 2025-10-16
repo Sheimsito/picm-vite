@@ -20,7 +20,7 @@ const routes = {
     '#/recovery': Recovery,
     '#/dashboard': Dashboard,
     '#/reset-password': ResetPassword,
-    '': Login, // ruta por defecto
+    '': Login, // default route
 };
 
 function getPath() {
@@ -28,11 +28,11 @@ function getPath() {
 }
 
 function setPage(pageName) {
-    document.body.className = ''; // limpia clases
+    document.body.className = ''; // clean classes
     document.body.classList.add(`${pageName}-page`);
 }
 
-// Mapeo de rutas a nombres de página
+// Mapping of routes to page names
 const routeToPageName = {
     '#/login': 'login',
     '#/recovery': 'recovery', 
@@ -48,11 +48,11 @@ export function router() {
     const app = document.getElementById('app');
     const path = getPath();
     
-    // Buscar ruta exacta primero
+    // Search exact route first
     let Page = routes[path];
     let pageName = routeToPageName[path];
     
-    // Si no se encuentra ruta exacta, buscar rutas con parámetros
+    // If exact route is not found, search routes with parameters
     if (!Page) {
         if (path.startsWith('#/reset-password/')) {
             Page = ResetPassword;
@@ -63,7 +63,7 @@ export function router() {
         }
     }
     
-    // Cambiar la clase del body dinámicamente
+    // Change the class of the body dynamically
     setPage(pageName);
 
     app.innerHTML = Page.render();

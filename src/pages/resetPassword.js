@@ -88,7 +88,7 @@ export const ResetPassword = {
                 console.log(window.location.hash.split('/')[3]);
                 console.log(newPassword);
                 
-                // Llamada a la API para resetear la contraseña
+                // Call to the API to reset the password
                 const response = await AuthService.resetPasswordConfirm({ 
                     userId: window.location.hash.split('/')[2], 
                     newPassword: newPassword,
@@ -96,12 +96,12 @@ export const ResetPassword = {
                 });
                 console.log(response);
                 
-                // Mostrar notificación de éxito
+                // Show success notification
                 Notification.show('¡Contraseña reestablecida exitosamente!', 'success', {
                     duration: 3000
                 });
 
-                // Redirigir al login después de un breve delay
+                // Redirect to the login after a brief delay
                 setTimeout(() => {
                     window.location.hash = '#/login';
                 }, 2000);

@@ -79,6 +79,16 @@ export class ProductService {
 
     }
 
+    static async createProduct(data){
+        try{
+            const response = await apiClient.post(ENDPOINTS.PRODUCTS.CREATE_PRODUCT, data);
+            return response
+        }
+        catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
     static async getCategories(){
         try{
             const url =  `${ENDPOINTS.PRODUCTS.GET_CATEGORIES}`
@@ -90,12 +100,40 @@ export class ProductService {
         }
     }
 
-    static async createProduct(data){
+    static async getCategoriesAll(page=1,pageSize=5){
         try{
-            const response = await apiClient.post(ENDPOINTS.PRODUCTS.CREATE_PRODUCT, data);
+            const url = `${ENDPOINTS.PRODUCTS.GET_CATEGORIES_ALL}?page=${page}&limit=${pageSize}`
+            const response = await apiClient.get(url)
             return response
+        }catch(error){
+            throw new Error(`${error.message}`);
         }
-        catch(error){
+    }
+    static async createCategory(data){
+        try{
+            const response = await apiClient.post(ENDPOINTS.PRODUCTS.CREATE_CATEGORY, data)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
+    static async updateCategory(id, data){
+        try{
+            const url = ENDPOINTS.PRODUCTS.UPDATE_CATEGORY(id)
+            const response = await apiClient.put(url, data)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+    
+    static async deleteCategory(id){
+        try{
+            const url = ENDPOINTS.PRODUCTS.DELETE_CATEGORY(id)
+            const response = await apiClient.delete(url)
+            return response
+        }catch(error){
             throw new Error(`${error.message}`);
         }
     }

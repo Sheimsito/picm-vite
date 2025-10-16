@@ -44,7 +44,7 @@ export const Login = {
         const passwordInput = document.getElementById('password');
         const button = document.querySelector('button');
         
-        // Función para validar campos en tiempo real
+        // Function to validate fields in real time
         const validateFields = () => {
             const username = usernameInput.value.trim();
             const password = passwordInput.value.trim();
@@ -56,11 +56,11 @@ export const Login = {
             }
         };
         
-        // Validar campos cuando el usuario escribe
+        // Validate fields when the user writes
         usernameInput.addEventListener('input', validateFields);
         passwordInput.addEventListener('input', validateFields);
         
-        // Validar campos al cargar la página
+        // Validate fields when the page is loaded
         validateFields();
         
         form.addEventListener('submit', async (event) => {
@@ -69,7 +69,7 @@ export const Login = {
             const username = usernameInput.value.trim();
             const password = passwordInput.value.trim();
             
-            // Verificar que los campos no estén vacíos
+            // Verify that the fields are not empty
             if(username === '' || password === ''){
                 Notification.show('Por favor, completa todos los campos', 'warning', {
                     duration: 3000
@@ -77,29 +77,29 @@ export const Login = {
                 return;
             }
             
-            // Deshabilitar el botón durante la petición
+            // Disable the button during the request
             button.disabled = true;
             button.innerHTML = '<span class="loader"></span>Iniciando sesión...';
             
             
             try {
                       
-                // Llamada a la API 
+                // Call to the API 
                 const response = await AuthService.login({ username, password });           
                 
-                // Mostrar notificación de éxito
+                // Show success notification
                 Notification.show('¡Ha iniciado sesión correctamente!', 'success', {
                     duration: 1100
                 });
                 
-                // Redirigir al dashboard después de un breve delay
+                // Redirect to the dashboard after a brief delay
                 setTimeout(() => {
                     window.location.hash = '#/dashboard';
                 }, 1500);
                 
             } catch (error) {
            
-                // Mostrar notificación de error
+                // Show error notification
                 Notification.show('Error al iniciar sesión: ' + error.message, 'error', {
                     duration: 4000
                 });
