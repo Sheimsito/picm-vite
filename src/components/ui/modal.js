@@ -42,11 +42,11 @@ export const Modal = {
                     <select 
                         id="${input.id || `input-${index}`}"
                         name="${input.name || `input-${index}`}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg transition-colors duration-200"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg "
                         ${input.required ? 'required' : ''}
                         ${input.disabled ? 'disabled' : ''}
                     >
-                        ${selectOptions.map(option => `<option class="text-gray-600 text-sm font-normal bg-white " value="${option}">${option}</option>`).join('')}
+                        ${selectOptions.map(option => `<option class="text-gray-600 text-sm font-normal bg-white" value="${option}" ${input.value === option ? 'selected' : ''}>${option}</option>`).join('')}
                     </select>
                 ` : `
                     <input 
@@ -54,7 +54,7 @@ export const Modal = {
                         id="${input.id || `input-${index}`}"
                         name="${input.name || `input-${index}`}"
                         placeholder="${input.placeholder || ''}"
-                        value="${input.value || ''}"
+                        value="${input.value || (input.type === 'number' ? '0' : '')}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-transparent transition-colors duration-200"
                         ${input.required ? 'required' : ''}
                         ${input.disabled ? 'disabled' : ''}
@@ -118,7 +118,6 @@ export const Modal = {
         </div>
         `;
     },
-    
     init(){
         // Global function to close modal
         window.closeModal = () => {
@@ -189,6 +188,8 @@ export const Modal = {
         };
         document.addEventListener('keydown', handleEscape);
     },
+
+ 
 
     // Method to show modal
     show(options = {}){

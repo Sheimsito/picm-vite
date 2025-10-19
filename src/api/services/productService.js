@@ -58,7 +58,6 @@ export class ProductService {
         try{
             let url = `${ENDPOINTS.PRODUCTS.GET_ALL_PRODUCTS}`
             const response = await apiClient.get(url)
-            console.log(response)
             const {total_products} = response
             return total_products
         } catch(error){

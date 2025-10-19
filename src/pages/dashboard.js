@@ -3,7 +3,9 @@ import { AuthService } from '../api/services/authService.js'
 import { Notification } from '../components/ui/Notification.js'
 import { Modal } from '../components/ui/modal.js'
 import { ProductService } from '../api/services/productService.js'
+import { SupplyService } from '../api/services/supplyService.js'
 import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
+import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtils.js'
 
 export const Dashboard = {
     render(){
@@ -36,8 +38,8 @@ export const Dashboard = {
                     <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="productos">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-store">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" />
-                            <path d="M3 7v1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1h-18l2 -4h14l2 4" />
-                            <path d="M5 21l0 -10.15" /><path d="M19 21l0 -10.15" />
+                            <path d="M5 21v-12l5 4v-4l5 4h4" />
+                            <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
                             <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
                         </svg>
                         <span class="pl-3 text-xs lg:text-sm">Productos</span>
@@ -49,7 +51,7 @@ export const Dashboard = {
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M4 4h6v6h-6z" /><path d="M14 4h6v6h-6z" />
                             <path d="M4 14h6v6h-6z" />
-                            <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                            <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                         </svg>
                         <span class="pl-3 text-xs lg:text-sm">Categorías</span>
                     </button>
@@ -62,7 +64,7 @@ export const Dashboard = {
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21h18" />
                             <path d="M5 21v-12l5 4v-4l5 4h4" />
                             <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
-                            <path d="M9 17h1" /><path d="M14 17h1" />
+                            <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
                         </svg>
                         <span class="pl-3 text-xs lg:text-sm">Insumos</span>
                     </button>
@@ -113,7 +115,7 @@ export const Dashboard = {
                     <button id="help" class="flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-text-secondary)] hover:border-[var(--color-text-secondary)] hover:text-white transition-all duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-help">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                             <path d="M12 17l0 .01" />
                             <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
                         </svg>
@@ -227,10 +229,23 @@ export const Dashboard = {
                                     <h3 class="font-semibold text-green-900">Categorías</h3>
                                     <p class="text-green-700 text-sm">Organiza tus productos por categorías</p>
                                 </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-yellow-900">Insumos</h3>
+                                    <p class="text-yellow-700 text-sm">Gestiona tus insumos</p>
+                                </div>
+                                <div class="bg-red-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-red-900">Proveedores</h3>
+                                    <p class="text-red-700 text-sm">Gestiona tus proveedores</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg">
+                                    <h3 class="font-semibold text-orange-900">Movimientos</h3>
+                                    <p class="text-orange-700 text-sm">Consulta tus movimientos de productos e insumos</p>
+                                </div>
                                 <div class="bg-purple-50 p-4 rounded-lg">
                                     <h3 class="font-semibold text-purple-900">Reportes</h3>
                                     <p class="text-purple-700 text-sm">Consulta estadísticas y reportes</p>
                                 </div>
+
                             </div>
                         </div>
                     `;
@@ -259,21 +274,21 @@ export const Dashboard = {
                     break;
                     
                 case 'insumos':
-                    dashboardContent.innerHTML = `
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Insumos</h3>
-                            <p class="text-gray-600">Contenido de insumos próximamente...</p>
-                        </div>
-                    `;
+                    const suppliesConfig = SectionFactory.createSuppliesSection(SupplyService);
+                    const suppliesManager = new SectionManager(suppliesConfig);
+                    
+                    window.changePage = (newPage) => suppliesManager.changePage(newPage);
+                    
+                    await suppliesManager.init();
                     break;
                     
                 case 'proveedores':
-                    dashboardContent.innerHTML = `
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Proveedores</h3>
-                            <p class="text-gray-600">Contenido de proveedores próximamente...</p>
-                        </div>
-                    `;
+                    const suppliersConfig = SectionFactory.createSuppliersSection(SupplyService);
+                    const suppliersManager = new SectionManager(suppliersConfig);
+                    
+                    window.changePage = (newPage) => suppliersManager.changePage(newPage);
+                    
+                    await suppliersManager.init();
                     break;
                     
                 case 'movimientos':
@@ -321,151 +336,65 @@ export const Dashboard = {
         // Global functions for product actions
         window.openAddProductModal = async () => {
             const selectOptions = await ProductService.getCategories()
-            Modal.show({
+            openModalAndHandle({
                 title: 'Agregar Producto',
-                inputs: [{
-                    title: 'Nombre',
-                    type: 'text',
-                    placeholder: 'Ingrese el nombre del producto',
-                    name: 'nombre',
-                    id: 'nombre'
-                },
-                {
-                    title: 'Descripción',
-                    type: 'text',
-                    placeholder: 'Ingrese la descripción del producto',
-                    name: 'descripcion',
-                    id: 'descripcion'
-                },
-                {
-                    title: 'Precio',
-                    type: 'number',
-                    placeholder: 'Ingrese el precio del producto',
-                    name: 'precio',
-                    id: 'precio'
-                },
-                {
-                    title: 'Categoría',
-                    type: 'select',
-                    placeholder: 'Seleccione la categoría del producto',
-                    name: 'categoria',
-                    id: 'categoria'
-                }
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del producto', name: 'nombre', id: 'nombre' },
+                    { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del producto', name: 'descripcion', id: 'descripcion' },
+                    { title: 'Precio', type: 'number', placeholder: 'Ingrese el precio del producto', name: 'precio', id: 'precio' },
+                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria' }
                 ],
-                selectOptions: selectOptions,
-                showSubmitButton: true,
+                selectOptions,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
-                onSubmit: async () => {
-                    try {
-                        const data = {
-                            nombre: document.getElementById('nombre').value,
-                            descripcion: document.getElementById('descripcion').value,
-                            precio: document.getElementById('precio').value,
-                            categoria: document.getElementById('categoria').value,
-                        }                    
-                        await ProductService.createProduct(data);
-                        Notification.show('Producto guardado correctamente', 'success', {
-                            duration: 1100
-                        });
-                        window.closeModal();
-                        // Reload the products table
-                        showSection('productos');
-                    } catch (error) {
-                        Notification.show('Error al guardar el producto: ' + error.message, 'error', {
-                            duration: 4000
-                        });
-                    }
-                }
-
-            });
+                buildPayload: () => ({
+                    nombre: document.getElementById('nombre').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    precio: document.getElementById('precio').value,
+                    categoria: document.getElementById('categoria').value,
+                }),
+                apiCall: (payload) => ProductService.createProduct(payload),
+                successMessage: 'Producto guardado correctamente',
+                onSuccess: () => showSection('productos')
+            })
         };
         
         window.editProduct = async (id) => {
-            const {name,description,price} = await ProductService.getProductById(id)
+            const {name,description,price,category} = await ProductService.getProductById(id)
             const selectOptions = await ProductService.getCategories()
-            Modal.show({
+            openModalAndHandle({
                 title: 'Editar Producto',
-                inputs: [{
-                    title: 'Nombre',
-                    type: 'text',
-                    placeholder: 'Ingrese el nombre del producto',
-                    name: 'nombre',
-                    id: 'nombre',
-                    value: name || ''
-                },
-                {
-                    title: 'Descripción',
-                    type: 'text',
-                    placeholder: 'Ingrese la descripción del producto',
-                    name: 'descripcion',
-                    id: 'descripcion',
-                    value: description || ''
-                },
-                {
-                    title: 'Precio',
-                    type: 'number',
-                    placeholder: 'Ingrese el precio del producto',
-                    name: 'precio',
-                    id: 'precio',
-                    value: price || ''
-                },
-                {
-                    title: 'Categoría',
-                    type: 'select',
-                    placeholder: 'Seleccione la categoría del producto',
-                    name: 'categoria',
-                    id: 'categoria',
-
-                }
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del producto', name: 'nombre', id: 'nombre', value: name || '' },
+                    { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del producto', name: 'descripcion', id: 'descripcion', value: description || '' },
+                    { title: 'Precio', type: 'number', placeholder: 'Ingrese el precio del producto', name: 'precio', id: 'precio', value: price || '' },
+                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria', value: category || '' }
                 ],
-                selectOptions: selectOptions,
-                showSubmitButton: true,
+                selectOptions,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
-                onSubmit: async () => {
-                    try {
-                        const data = {
-                            nombre: document.getElementById('nombre').value,
-                            descripcion: document.getElementById('descripcion').value,
-                            precio: document.getElementById('precio').value,
-                            categoria: document.getElementById('categoria').value,
-                        }                    
-                        await ProductService.updateProduct(id,data);
-                        Notification.show('Producto actualizado correctamente', 'success', {
-                            duration: 1100
-                        });
-                        window.closeModal();
-                        // Reload the products table
-                        showSection('productos');
-                    } catch (error) {
-                        Notification.show('Error al actualizar el producto: ' + error.message, 'error', {
-                            duration: 4000
-                        });
-                    }
-                }
-
-            });
+                buildPayload: () => ({
+                    nombre: document.getElementById('nombre').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    precio: document.getElementById('precio').value,
+                    categoria: document.getElementById('categoria').value,
+                }),
+                apiCall: (payload) => ProductService.updateProduct(id, payload),
+                successMessage: 'Producto actualizado correctamente',
+                onSuccess: () => showSection('productos')
+            })
         };
 
         window.deleteProduct = async (id) => {
             console.log('Eliminando producto con ID:', id);
-            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-                try {
-                await ProductService.deleteProduct(id);
-                Notification.show('Producto eliminado correctamente', 'success', {
-                    duration: 2000
-                });
-                // Reload the products table
-                showSection('productos');
-            } catch (error) {
-                Notification.show('Error al eliminar el producto: ' + error.message, 'error', {
-                    duration: 4000
-                });
-                }
-            }
+            await confirmAndDelete({
+                confirmText: '¿Estás seguro de que quieres eliminar este producto?',
+                apiCall: () => ProductService.deleteProduct(id),
+                successMessage: 'Producto eliminado correctamente',
+                onSuccess: () => showSection('productos')
+            })
         };
 
 
@@ -473,48 +402,23 @@ export const Dashboard = {
         window.editCategory = async (id) => {
             try {
                 const {name,description} = await ProductService.getCategoriesById(id);
-                Modal.show({
+                openModalAndHandle({
                     title: 'Editar Categoría',
-                    inputs: [{
-                        title: 'Nombre',
-                        type: 'text',
-                        placeholder: 'Ingrese el nombre de la categoría',
-                        name: 'nombre',
-                        id: 'nombre',
-                        value: name || ''
-                            },
-                            {
-                        title: 'Descripción',
-                        type: 'text',
-                        placeholder: 'Ingrese la descripción de la categoría',
-                        name: 'descripcion',
-                        id: 'descripcion',
-                        value: description || ''
-                            }
+                    inputs: [
+                        { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre de la categoría', name: 'nombre', id: 'nombre', value: name || '' },
+                        { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción de la categoría', name: 'descripcion', id: 'descripcion', value: description || '' }
                     ],
-                    showSubmitButton: true,
                     submitText: 'Guardar',
                     closeText: 'Cancelar',
                     size: 'md',
-                    onSubmit: async () => {
-                        try {
-                            const data = {
-                                nombre: document.getElementById('nombre').value,
-                                descripcion: document.getElementById('descripcion').value,
-                            }                    
-                            await ProductService.updateCategory(id, data);
-                            Notification.show('Categoría actualizada correctamente', 'success', {
-                                duration: 1100
-                            });
-                            window.closeModal();
-                            showSection('categorias');
-                        } catch (error) {
-                            Notification.show('Error al actualizar la categoría: ' + error.message, 'error', {
-                                duration: 4000
-                            });
-                        }
-                    }
-                });
+                    buildPayload: () => ({
+                        nombre: document.getElementById('nombre').value,
+                        descripcion: document.getElementById('descripcion').value,
+                    }),
+                    apiCall: (payload) => ProductService.updateCategory(id, payload),
+                    successMessage: 'Categoría actualizada correctamente',
+                    onSuccess: () => showSection('categorias')
+                })
             } catch (error) {
                 Notification.show('Error al cargar la categoría: ' + error.message, 'error', {
                     duration: 4000
@@ -524,66 +428,161 @@ export const Dashboard = {
 
         window.deleteCategory = async (id) => {
             console.log('Eliminando categoría con ID:', id);
-            if (confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
-                try {
-                    await ProductService.deleteCategory(id);
-                    Notification.show('Categoría eliminada correctamente', 'success', {
-                        duration: 2000
-                    });
-                    showSection('categorias');
-                } catch (error) {
-                    Notification.show('Error al eliminar la categoría: ' + error.message, 'error', {
-                        duration: 4000
-                    });
-                }
-            }
+            await confirmAndDelete({
+                confirmText: '¿Estás seguro de que quieres eliminar esta categoría?',
+                apiCall: () => ProductService.deleteCategory(id),
+                successMessage: 'Categoría eliminada correctamente',
+                onSuccess: () => showSection('categorias')
+            })
         };
 
         window.openAddCategoryModal = async () => {
-            Modal.show({
+            openModalAndHandle({
                 title: 'Agregar Categoría',
-                inputs: [{
-                    title: 'Nombre',
-                    type: 'text',
-                    placeholder: 'Ingrese el nombre de la categoría',
-                    name: 'nombre',
-                    id: 'nombre'
-                },
-                {
-                    title: 'Descripción',
-                    type: 'text',
-                    placeholder: 'Ingrese la descripción de la categoría',
-                    name: 'descripcion',
-                    id: 'descripcion'
-                }
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre de la categoría', name: 'nombre', id: 'nombre' },
+                    { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción de la categoría', name: 'descripcion', id: 'descripcion' }
                 ],
-                showSubmitButton: true,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'md',
-                onSubmit: async () => {
-                    try {
-                        const data = {
-                            nombre: document.getElementById('nombre').value,
-                            descripcion: document.getElementById('descripcion').value,
-                        }                    
-                        await ProductService.createCategory(data);
-                        Notification.show('Categoría guardada correctamente', 'success', {
-                            duration: 1100
-                        });
-                        window.closeModal();
-                        showSection('categorias');
-                    } catch (error) {
-                        Notification.show('Error al guardar la categoría: ' + error.message, 'error', {
-                            duration: 4000
-                        });
-                    }
+                buildPayload: () => ({
+                    nombre: document.getElementById('nombre').value,
+                    descripcion: document.getElementById('descripcion').value,
+                }),
+                apiCall: (payload) => ProductService.createCategory(payload),
+                successMessage: 'Categoría guardada correctamente',
+                onSuccess: () => showSection('categorias')
+            })
+        };
+
+
+        // Global functions for supply actions
+        window.openAddSupplyModal = async () => {
+            const selectOptions = await SupplyService.getSuppliers()
+            openModalAndHandle({
+                title: 'Agregar Insumo',
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del insumo', name: 'nombre', id: 'nombre' },
+                    { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del insumo', name: 'descripcion', id: 'descripcion' },
+                    { title: 'Precio Unitario', type: 'number', placeholder: 'Ingrese el precio unitario del insumo', name: 'precio', id: 'precio' },
+                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor' }
+                ],
+                selectOptions,
+                submitText: 'Guardar',
+                closeText: 'Cancelar',
+                size: 'lg',
+                buildPayload: () => ({
+                    nombre: document.getElementById('nombre').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    precio_unitario: document.getElementById('precio').value,
+                    proveedor: document.getElementById('proveedor').value,
+                }),
+                apiCall: (payload) => SupplyService.createSupply(payload),
+                successMessage: 'Insumo guardado correctamente',
+                onSuccess: () => showSection('insumos')
+            })
+        };
+
+        window.editSupply = async (id) => {
+            const {name,description,unitaryPrice,supplier} = await SupplyService.getSuppliesById(id)
+            const selectOptions = await SupplyService.getSuppliers()
+            openModalAndHandle({
+                title: 'Editar Insumo',
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del insumo', name: 'nombre', id: 'nombre', value: name || '' },
+                    { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del insumo', name: 'descripcion', id: 'descripcion', value: description || '' },
+                    { title: 'Precio Unitario', type: 'number', placeholder: 'Ingrese el precio unitario del insumo', name: 'precio', id: 'precio', value: unitaryPrice || '' },
+                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor', value: supplier || '' }
+                ],
+                selectOptions,
+                submitText: 'Guardar',
+                closeText: 'Cancelar',
+                size: 'lg',
+                buildPayload: () => ({
+                    nombre: document.getElementById('nombre').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    precio_unitario: document.getElementById('precio').value,
+                    proveedor: document.getElementById('proveedor').value,
+                }),
+                apiCall: (payload) => SupplyService.updateSupply(id, payload),
+                successMessage: 'Insumo actualizado correctamente',
+                onSuccess: () => showSection('insumos')
+            })
+        };
+
+        window.deleteSupply = async (id) => {
+            await confirmAndDelete({
+                confirmText: '¿Estás seguro de que quieres eliminar este insumo?',
+                deleteFn: async () => {
+                    await SupplyService.deleteSupply(id);
+                    showSection('insumos');
                 }
             });
         };
 
 
+        // Global functions for supplier actions
+        window.openAddSupplierModal = () => openModalAndHandle({
+            title: 'Agregar Proveedor',
+            inputs: [
+                { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del proveedor', name: 'nombre', id: 'nombre' },
+                { title: 'NIT', type: 'text', placeholder: 'Ingrese el NIT del proveedor', name: 'nit', id: 'nit' },
+                { title: 'Telefono', type: 'text', placeholder: 'Ingrese el telefono del proveedor', name: 'telefono', id: 'telefono' },
+                { title: 'Correo', type: 'text', placeholder: 'Ingrese el correo del proveedor', name: 'correo', id: 'correo' },
+                { title: 'Dirección', type: 'text', placeholder: 'Ingrese la dirección del proveedor', name: 'direccion', id: 'direccion' },
+            ],
+            submitText: 'Guardar',
+            closeText: 'Cancelar',
+            size: 'lg',
+            buildPayload: () => ({
+                name: document.getElementById('nombre').value,
+                nit: document.getElementById('nit').value,
+                phone: document.getElementById('telefono').value,
+                email: document.getElementById('correo').value,
+                address: document.getElementById('direccion').value,
+            }),
+            apiCall: (payload) => SupplyService.createSupplier(payload),
+            successMessage: 'Proveedor guardado correctamente',
+            onSuccess: () => showSection('proveedores')
+        })
 
+        window.editSupplier = async (id) => {
+            const {name,nit,phone,email,address} = await SupplyService.getSuppliersById(id)
+            openModalAndHandle({
+                title: 'Editar Proveedor',
+                inputs: [
+                    { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del proveedor', name: 'nombre', id: 'nombre', value: name || '' },
+                    { title: 'NIT', type: 'text', placeholder: 'Ingrese el NIT del proveedor', name: 'nit', id: 'nit', value: nit || '' },
+                    { title: 'Telefono', type: 'text', placeholder: 'Ingrese el telefono del proveedor', name: 'telefono', id: 'telefono', value: phone || '' },
+                    { title: 'Correo', type: 'text', placeholder: 'Ingrese el correo del proveedor', name: 'correo', id: 'correo', value: email || '' },
+                    { title: 'Dirección', type: 'text', placeholder: 'Ingrese la dirección del proveedor', name: 'direccion', id: 'direccion', value: address || '' },
+                ],
+                submitText: 'Guardar',
+                closeText: 'Cancelar',
+                size: 'lg',
+                buildPayload: () => ({
+                    name: document.getElementById('nombre').value,
+                    nit: document.getElementById('nit').value,
+                    phone: document.getElementById('telefono').value,
+                    email: document.getElementById('correo').value,
+                    address: document.getElementById('direccion').value,
+                }),
+                apiCall: (payload) => SupplyService.updateSupplier(id, payload),
+                successMessage: 'Proveedor actualizado correctamente',
+                onSuccess: () => showSection('proveedores')
+            })
+        }
+
+        window.deleteSupplier = async (id) => {
+            await confirmAndDelete({
+                confirmText: '¿Estás seguro de que quieres eliminar este proveedor?',
+                deleteFn: async () => {
+                    await SupplyService.deleteSupplier(id);
+                    showSection('proveedores');
+                }
+            });
+        };
         // Show initial section
         showSection('inicio');
     }   
