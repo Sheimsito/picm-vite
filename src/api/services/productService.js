@@ -109,6 +109,15 @@ export class ProductService {
             throw new Error(`${error.message}`);
         }
     }
+    static async getCategoriesById(id){
+        try{
+            const url = `${ENDPOINTS.PRODUCTS.GET_CATEGORIES_BY_ID(id)}`
+            const response = await apiClient.get(url)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
     static async createCategory(data){
         try{
             const response = await apiClient.post(ENDPOINTS.PRODUCTS.CREATE_CATEGORY, data)
