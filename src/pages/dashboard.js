@@ -397,6 +397,54 @@ export const Dashboard = {
             })
         };
 
+        window.increaseStockProduct = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Aumentar Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => ProductService.updateStock(id, payload, 'increase'),
+                    successMessage: 'Stock aumentado correctamente',
+                    onSuccess: () => showSection('productos')
+                })
+            }catch(error){
+                Notification.show('Error al aumentar stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+
+        window.decreaseStockProduct = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Disminuir Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => ProductService.updateStock(id, payload, 'decrease'),
+                    successMessage: 'Stock disminuido correctamente',
+                    onSuccess: () => showSection('productos')
+                })
+            }catch(error){
+                Notification.show('Error al disminuir stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+
 
         // Global functions for category actions
         window.editCategory = async (id) => {
@@ -521,7 +569,54 @@ export const Dashboard = {
             });
         };
 
-
+        window.increaseStockSupply = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Aumentar Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => SupplyService.updateStock(id, payload, 'increase'),
+                    successMessage: 'Stock aumentado correctamente',
+                    onSuccess: () => showSection('insumos')
+                })
+            }catch(error){
+                Notification.show('Error al aumentar stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+        
+        window.decreaseStockSupply = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Disminuir Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => SupplyService.updateStock(id, payload, 'decrease'),
+                    successMessage: 'Stock disminuido correctamente',
+                    onSuccess: () => showSection('insumos')
+                })
+            }catch(error){
+                Notification.show('Error al disminuir stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+        
         // Global functions for supplier actions
         window.openAddSupplierModal = () => openModalAndHandle({
             title: 'Agregar Proveedor',

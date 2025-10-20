@@ -1,3 +1,6 @@
+
+import { Notification } from "./notification";
+
 export const Modal = {
     render({
         title = '',
@@ -137,10 +140,29 @@ export const Modal = {
             }
         };
 
+        // Validator
+        const validateForm = (form) => {
+            const inputs = form.querySelectorAll('input');
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                    input.classList.add('error');
+                }
+            });
+            return isValid;
+        };
+
         // Global function to submit modal
         window.submitModal = async () => {
             const form = document.getElementById('modal-form');
             if (form) {
+                if (!validateForm(form)) {
+                    Notification.show('Por favor, complete todos los campos', 'error', {
+                        duration: 4000
+                    });
+                    return;
+                }
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData);
                 console.log('Form data:', data);

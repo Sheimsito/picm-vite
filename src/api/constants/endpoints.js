@@ -19,6 +19,7 @@ export const ENDPOINTS = {
       GET_ALL_VALUE: '/products/total-stock-value',
       BY_ID: (id) => `/products/get/${id}`,
       UPDATE_PRODUCT: (id) => `/products/update/${id}`,
+      UPDATE_STOCK: (id) => `/products/update-stock/${id}`,
       DELETE_PRODUCT: (id) => `/products/delete/${id}`,
       SEARCH:  `/products/search/ `,
 
@@ -43,6 +44,7 @@ export const ENDPOINTS = {
       GET_SUPPLIES_ALL_VALUE: `/supplies/total-inventory-value`,
       BY_ID: (id) => `/supplies/get/${id}`,
       UPDATE_SUPPLY: (id) => `/supplies/update/${id}`,
+      UPDATE_STOCK: (id) => `/supplies/update-stock/${id}`,
       DELETE_SUPPLY: (id) => `/supplies/delete/${id}`,
 
       // SUPPLIER ENDPOINTS

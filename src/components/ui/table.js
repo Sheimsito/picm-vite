@@ -105,12 +105,30 @@ export const Table = {
                                 // If it is an object and dataFields are specified, use those fields
                             if (dataFields.length > 0) {
                                 return dataFields.map((field, cellIndex) => {
-                                    const value = row[field] !== null && row[field] !== undefined ? row[field] : '';
-                                    // If the value contains HTML (like buttons), render it as is
+                                    let value = row[field] !== null && row[field] !== undefined ? row[field] : '';
+                                    
+                                if (field === "stock") {
+
+                                        const isSupply = headers[3] === "Precio Unitario";
+
+                                        const onClickIncrease = isSupply
+                                            ? `increaseStockSupply(${row.id})`
+                                            : `increaseStockProduct(${row.id})`;
+
+                                        const onClickDecrease = isSupply
+                                            ? `decreaseStockSupply(${row.id})`
+                                            : `decreaseStockProduct(${row.id})`;
+
+                                        value = `
+                                            <button onclick="${onClickIncrease}" class="w-[2rem] h-[2rem] mx-2 bg-[var(--color-primary-hover)] text-[var(--color-bg)] border-[#D4D4D4] border-[0.1rem] hover:bg-[var(--color-primary)] rounded-2xl">+</button>
+                                            <span id="stockInput">${value}</span>
+                                            <button onclick="${onClickDecrease}" class="w-[2rem] h-[2rem] mx-2 bg-[var(--color-bg-secondary)] rounded-2xl hover:bg-[#D4D4D4]">-</button>
+                                        `.trim();
+                                }   
                                     const isHTML = typeof value === 'string' && (value.includes('<button') || value.includes('<a') || value.includes('<div'));
                                     return cellIndex === 0 
-                                        ? `<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-black">${isHTML ? value : value}</th>` 
-                                        : `<td class="px-6 py-4">${isHTML ? value : value}</td>`;
+                                        ? `<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-black">${value}</th>` 
+                                        : `<td class="px-6 py-4">${value}</td>`;
                                 }).join('');
                             } else {
                                 // If dataFields are not specified, use all the properties of the object

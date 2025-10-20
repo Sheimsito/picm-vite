@@ -34,6 +34,16 @@ export class ProductService {
         }
     }
 
+    static async updateStock(id,data,option){
+        try{
+            const url = `${ENDPOINTS.PRODUCTS.UPDATE_STOCK(id)}?${option}=true`
+            const response = await apiClient.put(url,data)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
     static async deleteProduct(id){
         try{
             const url = `${ENDPOINTS.PRODUCTS.DELETE_PRODUCT(id)}`

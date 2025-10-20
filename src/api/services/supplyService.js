@@ -35,6 +35,16 @@ export class SupplyService {
         }
     }
 
+    static async updateStock(id,data,option){
+        try{
+            const url = `${ENDPOINTS.SUPPLIES.UPDATE_STOCK(id)}?${option}=true`
+            const response = await apiClient.put(url,data)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+    
     static async deleteSupply(id){
         try{
             const response = await apiClient.delete(ENDPOINTS.SUPPLIES.DELETE_SUPPLY(id));
