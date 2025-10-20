@@ -1,5 +1,5 @@
 
-import { Notification } from "./notification";
+import { Notification } from "./Notification.js";
 
 export const Modal = {
     render({
