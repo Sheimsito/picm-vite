@@ -33,17 +33,25 @@ export const ENDPOINTS = {
 
     },
       
-    // -> Unificar Proveedores y Insumos DESPUÉS
-    // Proveedores
-    SUPPLIERS: {
-      BASE: '/suppliers/',
-      BY_ID: (id) => `/suppliers/${id}/`
-    },
-    
     // Insumos
     SUPPLIES: {
-      BASE: '/supplies/',
-      BY_ID: (id) => `/supplies/${id}/`
+
+      // SUPPLIES ENDPOINTS
+      GET_SUPPLIES: `/supplies/get-paginated`,
+      CREATE_SUPPLY: `/supplies/create`,
+      GET_SUPPLIES_TOTAL_STOCK: `/supplies/total-stock`,
+      GET_SUPPLIES_ALL_VALUE: `/supplies/total-inventory-value`,
+      BY_ID: (id) => `/supplies/get/${id}`,
+      UPDATE_SUPPLY: (id) => `/supplies/update/${id}`,
+      DELETE_SUPPLY: (id) => `/supplies/delete/${id}`,
+
+      // SUPPLIER ENDPOINTS
+      GET_SUPPLIER: `/supplies/get-suppliers`,
+      GET_SUPPLIER_PAGINATED: `/supplies/get-suppliers-paginated`,
+      GET_SUPPLIER_BY_ID: (id) => `/supplies/get-supplier/${id}`,
+      CREATE_SUPPLIER: `/supplies/create-supplier`,
+      UPDATE_SUPPLIER: (id) => `/supplies/update-supplier/${id}`,
+      DELETE_SUPPLIER: (id) => `/supplies/delete-supplier/${id}`,
     },
     
     // Movimientos

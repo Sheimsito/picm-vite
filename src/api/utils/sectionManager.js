@@ -2,7 +2,7 @@ import { createSearchHandler } from './dashboardUtils.js';
 import { Table } from '../../components/ui/table.js';
 
 /**
- * Reusable simplified section management system}
+ * Reusable simplified section management system
  * This is a simplified section management system that can be reused for different sections
  * It is used to manage the data and the UI of the sections dynamically
  */
@@ -11,7 +11,7 @@ export class SectionManager {
         this.config = config;
         this.currentSearchTerm = '';
         this.currentFilter = '';
-        this.currentCategory = '';
+        this.currentInputFilter = '';
         this.currentPage = 1;
         this.pageSize = config.pageSize || 5;
     }
@@ -37,8 +37,8 @@ export class SectionManager {
     /**
      * Load data from the section
      */
-    async loadData(page, pageSize, search = '', filter = '', category = '') {
-        const response = await this.config.loader(page, pageSize, search, filter, category);
+    async loadData(page, pageSize, search = '', filter = '', inputFilterValue = '') {
+        const response = await this.config.loader(page, pageSize, search, filter, inputFilterValue);
         let data = response.results || response.data || response;
         // Aplicar filtro local si es necesario
         if (search && search.trim() && this.config.localFilter) {
@@ -134,14 +134,17 @@ export class SectionManager {
         const applyFiltersBtn = document.getElementById('apply-filters');
         const clearFiltersBtn = document.getElementById('clear-filters');
         const filterSelect = document.getElementById('filter-select');
-        const categoryInput = document.getElementById('category-input');
+        let inputFilterInput = null;
+        if (filterSelect && filterSelect.parentElement) {
+            inputFilterInput = filterSelect.parentElement.querySelector('input[type="text"]');
+        }
         
         if (applyFiltersBtn) {
             applyFiltersBtn.addEventListener('click', async () => {
                 this.currentFilter = filterSelect?.value || '';
-                this.currentCategory = categoryInput?.value || '';
+                this.currentInputFilter = inputFilterInput?.value || '';
                 
-                const newData = await this.loadData(1, this.pageSize, this.currentSearchTerm, this.currentFilter, this.currentCategory);
+                const newData = await this.loadData(1, this.pageSize, this.currentSearchTerm, this.currentFilter, this.currentInputFilter);
                 const stats = await this.loadStats();
                 this.renderContent(newData, stats);
                 
@@ -172,10 +175,13 @@ export class SectionManager {
      */
     restoreFilterValues() {
         const filterSelect = document.getElementById('filter-select');
-        const categoryInput = document.getElementById('category-input');
+        let inputFilterInput = null;
+        if (filterSelect && filterSelect.parentElement) {
+            inputFilterInput = filterSelect.parentElement.querySelector('input[type="text"]');
+        }
         
         if (filterSelect) filterSelect.value = this.currentFilter;
-        if (categoryInput) categoryInput.value = this.currentCategory;
+        if (inputFilterInput) inputFilterInput.value = this.currentInputFilter;
         
         const searchInput = document.getElementById('table-search-input');
         if (searchInput && this.currentSearchTerm) {
@@ -188,7 +194,7 @@ export class SectionManager {
      */
     clearFilters() {
         this.currentFilter = '';
-        this.currentCategory = '';
+        this.currentInputFilter = '';
         this.currentSearchTerm = '';
     }
 
@@ -197,7 +203,7 @@ export class SectionManager {
      */
     setupSearchHandler(stats) {
         const searchWrapper = (page, pageSize, search) => {
-            return this.loadData(page, pageSize, search, this.currentFilter, this.currentCategory);
+            return this.loadData(page, pageSize, search, this.currentFilter, this.currentInputFilter);
         };
 
         const updateContent = (newData) => {
@@ -218,7 +224,7 @@ export class SectionManager {
      * Change page
      */
     async changePage(newPage) {
-        const newData = await this.loadData(newPage, this.pageSize, this.currentSearchTerm, this.currentFilter, this.currentCategory);
+        const newData = await this.loadData(newPage, this.pageSize, this.currentSearchTerm, this.currentFilter, this.currentInputFilter);
         const stats = await this.loadStats();
         this.renderContent(newData, stats);
         
@@ -274,7 +280,9 @@ export const SectionFactory = {
                     showSearch: true,
                     showFilters: true,
                     filters: ['Stock bajo', 'Stock Alto', 'Precio bajo', 'Precio alto'],
-                    filterValues: ['low-stock', 'high-stock', 'low-price', 'high-price'],
+                    filterValues: ['stock', '-stock', 'price', '-price'],
+                    showInputFilter: true,
+                    inputFilter: 'category',
                     showCheckboxes: false,
                     size: 'lg',
                     variant: 'primary',
@@ -370,5 +378,131 @@ export const SectionFactory = {
                 </div>
             `
         };
+    },
+
+    createSuppliesSection(SupplyService) {
+        return {
+            name: 'Insumos',
+            sectionKey: 'insumos',
+            pageSize: 5,
+            searchFields: ['name', 'description'],
+            localFilter: false,
+            loader: (page, pageSize, search, filter, supplier) => 
+                SupplyService.getSupplies(page, pageSize, search, filter, supplier),
+            statsLoader: async () => {
+                  const [totalSupplies, totalValue] = await Promise.all([
+                    SupplyService.getTotalSupplies(),
+                    SupplyService.getTotalValue()
+                ]);
+                return { totalSupplies, totalValue };
+            },
+            actionButtons: (supply) => `
+                <div class="flex space-x-2">
+                    <button onclick="editSupply(${supply.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
+                    <button onclick="deleteSupply(${supply.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                </div>
+            `,
+            tableRenderer: (data) => {
+                return Table.render({
+                    headers: ['ID', 'Nombre', 'Descripción', 'Precio Unitario', 'Stock', 'Proveedor Asociado', 'Acciones'],
+                    body: data.data,
+                    dataFields: data.data.length > 0 ? Object.keys(data.data[0]) : [],
+                    striped: true,
+                    hover: true,
+                    responsive: false,
+                    showSearch: true,
+                    showFilters: true,
+                    filters: ['Stock bajo', 'Stock Alto', 'Precio unitario bajo', 'Precio unitario alto'],
+                    filterValues: ['stock', '-stock', 'unitaryPrice', '-unitaryPrice'],
+                    showInputFilter: true,
+                    inputFilter: 'supplier',
+                    showCheckboxes: false,
+                    size: 'lg',
+                    variant: 'primary',
+                    showPagination: true,
+                    itemsPerPage: 5,
+                    currentPage: data.currentPage,
+                    totalItems: data.totalItems,
+                    onPageChange: (newPage) => {
+                        console.log('Cambiando a página:', newPage);
+                    }
+                });
+            },
+            statsRenderer: (stats) => {
+                const colombianFormat = Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' });
+                const safeValue = Number(stats.totalValue) || 0;
+                
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-6xl mt-[2rem] mb-[1rem]">
+                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Insumos</h3>
+                            <p class="text-3xl font-bold text-primary">${stats.totalSupplies}</p>
+                        </div>
+                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Valor Total del Inventario</h3>
+                            <p class="text-3xl font-bold text-success">${colombianFormat.format(safeValue)}</p>
+                        </div>
+                    </div>
+                `;
+            },
+            actionsRenderer: () => `
+                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
+                    <button id="agregar-insumo" onclick="openAddSupplyModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Insumo</button>
+                </div>
+            `
+        };
+    },
+
+    createSuppliersSection(SupplyService){
+        return{
+            name: 'Proveedores',
+            sectionKey: 'proveedores',
+            pageSize: 5,
+            searchFields: ['name', 'description'],
+            localFilter: false,
+            loader: (page, pageSize, search, filter, supplier) => 
+                SupplyService.getSuppliersPaginated(page, pageSize, search, filter, supplier),
+            statsLoader: async () => {
+                      const suppliers = await SupplyService.getSuppliers();
+                return { totalSuppliers: suppliers.length };
+            },
+            actionButtons: (supplier) => `
+                <div class="flex space-x-2">
+                    <button onclick="editSupplier(${supplier.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
+                    <button onclick="deleteSupplier(${supplier.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                </div>
+            `,
+            tableRenderer: (data) => {
+                return Table.render({
+                    headers: ['ID', 'Nombre', 'NIT', 'Teléfono', 'Correo Electrónico', 'Dirección', 'Acciones'],
+                    body: data.data,
+                    dataFields: data.data.length > 0 ? Object.keys(data.data[0]) : [],
+                    striped: true,
+                    hover: true,
+                    responsive: false,
+                    showSearch: true,
+                    showFilters: false,
+                    filters: [],
+                    filterValues: [],
+                    showInputFilter: false,
+                    inputFilter: '',
+                    showCheckboxes: false,
+                    size: 'lg',
+                    variant: 'primary',
+                    showPagination: true,
+                    itemsPerPage: 5,
+                    currentPage: data.currentPage,
+                    totalItems: data.totalItems,
+                    onPageChange: (newPage) => {
+                        console.log('Cambiando a página:', newPage);
+                    }
+                });
+            },
+            actionsRenderer: () => `
+                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
+                    <button id="agregar-proveedor" onclick="openAddSupplierModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Proveedor</button>
+                </div>
+            `
+        }
     }
-};
+}

@@ -17,17 +17,20 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 ## ✨ Características
 
 - 🎨 **Interfaz Moderna**: Diseño limpio y profesional con Tailwind CSS
-- 📱 **Responsive Design**: Adaptable a diferentes tamaños de pantalla (Aún no implementado del todo)
+- 📱 **Responsive Design**: Adaptable a diferentes tamaños de pantalla (En desarrollo)
 - 🔐 **Autenticación Completa**: Login, logout, recuperación de contraseña
 - 📊 **Dashboard Interactivo**: Panel de control con métricas y estadísticas
 - 🛍️ **Gestión de Productos**: CRUD completo para productos con paginación
 - 🏷️ **Sistema de Categorías**: Organización de productos por categorías
-- 📦 **Gestión de Insumos**: Control de materias primas e insumos
-- 👥 **Proveedores**: Gestión de proveedores y sus datos
-- 💰 **Movimientos**: Registro de entradas y salidas de inventario
-- 📄 **Documentos**: Generación y gestión de documentos del sistema
+- 📦 **Gestión de Insumos**: Control de materias primas e insumos con métricas
+- 👥 **Proveedores**: Gestión completa de proveedores y sus datos
 - 🔔 **Notificaciones**: Sistema de notificaciones en tiempo real
 - 🎯 **Modales Dinámicos**: Componentes modales reutilizables
+- ⚡ **Sistema de Secciones**: Gestión dinámica de secciones del dashboard
+- 🔍 **Búsqueda Avanzada**: Filtros y búsqueda en tiempo real
+- 📄 **Paginación Inteligente**: Navegación eficiente por grandes volúmenes de datos
+- 💰 **Movimientos**: Registro de entradas y salidas de inventario (Pendiente)
+- 📄 **Documentos**: Generación y gestión de documentos del sistema (Pendiente)
 
 ## 🛠️ Tecnologías
 
@@ -42,6 +45,9 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - **Component-Based Architecture** - Componentes reutilizables
 - **Service Layer Pattern** - Separación de lógica de negocio
 - **API Client Pattern** - Cliente HTTP centralizado
+- **Section Management System** - Sistema dinámico de gestión de secciones
+- **Utility-First CSS** - Estilos con Tailwind CSS
+- **Modular JavaScript** - Código organizado en módulos ES6+
 
 ## 🚀 Instalación
 
@@ -116,9 +122,12 @@ picm-vite/
 │   │   │   └── endpoints.js     # Endpoints de la API
 │   │   ├── services/
 │   │   │   ├── authService.js   # Servicios de autenticación
-│   │   │   └── productService.js # Servicios de productos
+│   │   │   ├── productService.js # Servicios de productos
+│   │   │   └── supplyService.js # Servicios de insumos y proveedores
 │   │   └── utils/
-│   │       └── apiClient.js     # Cliente HTTP
+│   │       ├── apiClient.js     # Cliente HTTP
+│   │       ├── dashboardUtils.js # Utilidades del dashboard
+│   │       └── sectionManager.js # Gestor de secciones dinámico
 │   ├── components/
 │   │   └── ui/
 │   │       ├── modal.js         # Componente modal
@@ -161,12 +170,33 @@ picm-vite/
 - `DELETE /products/delete/{id}` - Eliminar producto
 - `GET /products/total-stock` - Total de productos
 - `GET /products/total-stock-value` - Valor total del inventario
+
+### Categorías
 - `GET /products/get-categories` - Obtener categorías
+- `GET /products/get-categories-all` - Obtener todas las categorías
+- `GET /products/get-category/{id}` - Obtener categoría por ID
+- `POST /products/create-category` - Crear categoría
+- `PUT /products/update-category/{id}` - Actualizar categoría
+- `DELETE /products/delete-category/{id}` - Eliminar categoría
+
+### Insumos
+- `GET /supplies/get-paginated` - Obtener insumos (paginado)
+- `POST /supplies/create` - Crear insumo
+- `GET /supplies/get/{id}` - Obtener insumo por ID
+- `PUT /supplies/update/{id}` - Actualizar insumo
+- `DELETE /supplies/delete/{id}` - Eliminar insumo
+- `GET /supplies/total-stock` - Total de insumos
+- `GET /supplies/total-inventory-value` - Valor total del inventario de insumos
+
+### Proveedores
+- `GET /supplies/get-suppliers` - Obtener proveedores
+- `GET /supplies/get-suppliers-paginated` - Obtener proveedores (paginado)
+- `GET /supplies/get-supplier/{id}` - Obtener proveedor por ID
+- `POST /supplies/create-supplier` - Crear proveedor
+- `PUT /supplies/update-supplier/{id}` - Actualizar proveedor
+- `DELETE /supplies/delete-supplier/{id}` - Eliminar proveedor
 
 ### Módulos Futuros
-- **Categorías**: `/categories/`
-- **Proveedores**: `/suppliers/`
-- **Insumos**: `/supplies/`
 - **Movimientos**: `/movements/`
 
 ## ✅ Funcionalidades Implementadas
@@ -183,6 +213,7 @@ picm-vite/
 - [x] Métricas principales (Total productos, Valor inventario)
 - [x] Secciones organizadas por módulos
 - [x] Diseño moderno y profesional
+- [x] Sistema de gestión de secciones dinámico
 
 ### 🛍️ Gestión de Productos
 - [x] Listado con paginación
@@ -192,11 +223,35 @@ picm-vite/
 - [x] Validación de formularios
 - [x] Notificaciones de éxito/error
 
+### 🏷️ Gestión de Categorías
+- [x] Listado con paginación
+- [x] Búsqueda en tiempo real
+- [x] CRUD completo
+- [x] Validación de formularios
+- [x] Integración con productos
+
+### 📦 Gestión de Insumos
+- [x] Listado con paginación
+- [x] Búsqueda en tiempo real
+- [x] Filtros avanzados
+- [x] CRUD completo
+- [x] Validación de formularios
+- [x] Métricas de inventario
+- [x] Gestión de stock
+
+### 👥 Gestión de Proveedores
+- [x] Listado con paginación
+- [x] Búsqueda en tiempo real
+- [x] CRUD completo
+- [x] Validación de formularios
+- [x] Integración con insumos
+
 ### 🎨 Componentes UI
 - [x] Modal dinámico y reutilizable
 - [x] Sistema de notificaciones
 - [x] Tabla de datos con funcionalidades avanzadas
 - [x] Formularios con validación
+- [x] Sistema de gestión de secciones reutilizable
 
 ## 🚧 Estado del Desarrollo
 
@@ -204,24 +259,30 @@ picm-vite/
 - Sistema de autenticación completo
 - Dashboard principal funcional
 - Gestión completa de productos
+- Gestión completa de categorías
+- Gestión completa de insumos
+- Gestión completa de proveedores
 - Componentes UI base
+- Sistema de gestión de secciones dinámico
 - Integración con API backend
+- Sistema de notificaciones
+- Modales dinámicos y reutilizables
 
 ### 🔄 En Desarrollo
 - Optimización del responsive design
 - Mejoras en la experiencia de usuario
 - Validaciones adicionales
+- Refactorización de servicios (reducción de código duplicado)
 
 ### 📋 Pendiente
-- [ ] Módulo de Categorías
-- [ ] Módulo de Insumos
-- [ ] Módulo de Proveedores
 - [ ] Módulo de Movimientos
 - [ ] Módulo de Documentos
 - [ ] Sistema de reportes
 - [ ] Optimización completa del responsive design
 - [ ] Testing automatizado
 - [ ] Documentación de API
+- [ ] Refactorización completa de servicios
+- [ ] Implementación de caché para mejor rendimiento
 
 ## ⚠️ Notas Importantes
 
@@ -243,15 +304,13 @@ picm-vite/
 
 ### Estándares de Código
 - Usar camelCase para variables y funciones
-- Comentarios en español
+- Comentarios en ingles
 - Estructura de componentes modular
 - Validación de formularios
 - Manejo de errores consistente
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT.
 
----
-
-**Desarrollado con ❤️ para StayAwayCo - PICM System**
+**Desarrollado con ❤️ para StayAwayCo**

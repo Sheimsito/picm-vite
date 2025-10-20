@@ -13,6 +13,8 @@ export const Table = {
         caption = '',
         showSearch = false,
         showFilters = false,
+        showInputFilter = false,
+        inputFilter = '',
         filters = [],
         filterValues = [],
         showCheckboxes = false,
@@ -155,12 +157,14 @@ export const Table = {
                              ${filters.map((filter, i) => ({ text: filter, value: filterValues[i] })).map(({ text, value }) => `<option value="${value}">${text}</option>`) .join('')}
                         </select>
                         
+                        ${showInputFilter ? `
                         <input 
                             type="text" 
-                            id="category-input" 
-                            placeholder="Filtrar por categoría..." 
+                            id="${inputFilter}-input" 
+                            placeholder="Filtrar por ${inputFilter == 'supplier' ? 'proveedor' : inputFilter}..." 
                             class="inline-flex items-center  text-black border bg-white border-gray-300 focus:outline-none hover:bg-gray-200 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5  dark:border-gray-400  hover:border-gray-400 "
                         />
+                        ` : ''}
                         
                         <button id="apply-filters" class="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white px-4 py-2 rounded text-sm">
                             Aplicar Filtros

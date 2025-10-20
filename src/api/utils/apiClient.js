@@ -83,7 +83,6 @@ class ApiClient {
     return this.request(endpoint, { ...options, method: 'DELETE' });
   }
 
-  // Manejo de tokens Django
   getAuthToken() {
     return localStorage.getItem('authToken');
   }
@@ -96,7 +95,6 @@ class ApiClient {
     localStorage.removeItem('authToken');
   }
 
-  // CSRF Token (si lo necesitas)
   getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]')?.value;
   }
