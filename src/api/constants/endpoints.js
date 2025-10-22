@@ -8,8 +8,9 @@ export const ENDPOINTS = {
       REGISTER: '/auth/registration/',
       PASSWORD_RESET: '/auth/password-reset',
       PASSWORD_RESET_CONFIRM: '/auth/confirm-reset-password',
-      USER: '/auth/user/',
+      USER: '/auth/user',
       GET_USERS: '/auth/get-users-name',
+  
     },
  
     PRODUCTS: {
@@ -36,7 +37,7 @@ export const ENDPOINTS = {
 
     },
       
-    // Insumos
+    
     SUPPLIES: {
 
       // SUPPLIES ENDPOINTS
@@ -59,7 +60,7 @@ export const ENDPOINTS = {
       DELETE_SUPPLIER: (id) => `/supplies/delete-supplier/${id}`,
     },
     
-    // Movimientos
+    //  MOVEMENT ENDPOINTS
     MOVEMENTS: {
       GET_MOVEMENTS: `/movements/get-movements`,
       CREATE_MOVEMENT: `/movements/create-movement`,
@@ -67,5 +68,22 @@ export const ENDPOINTS = {
       UPDATE_MOVEMENT: (id,tipoMovimiento) => `/movements/update-movement/${id}/${tipoMovimiento}`,
       CREATE_MOVEMENT: (tipoMovimiento) => `/movements/create-movement/${tipoMovimiento}`,
       DELETE_MOVEMENT: (id,tipoMovimiento) => `/movements/delete-movement/${id}/${tipoMovimiento}`,
+    },
+    
+   
+    STATISTICS: {
+      // PRODUCT STATISTICS
+      TOP_PRODUCTS_SALES: '/statistics/top-products-sales',
+      TOP_PRODUCTS_ENTRIES: '/statistics/top-products-entries',
+      PRODUCT_MOVEMENTS_VOLUME: '/statistics/product-movements-volume',
+      
+      // SUPPLY STATISTICS
+      TOP_SUPPLIES_SALES: '/statistics/top-supplies-sales',
+      TOP_SUPPLIES_ENTRIES: '/statistics/top-supplies-entries',
+      SUPPLY_MOVEMENTS_VOLUME: '/statistics/supply-movements-volume',
+      
+      // GENERAL STATISTICS
+      MONTHLY_MOVEMENTS: '/statistics/monthly-movements',
+      CATEGORY_DISTRIBUTION: '/statistics/category-distribution'
     }
   };

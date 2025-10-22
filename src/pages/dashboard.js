@@ -4,8 +4,13 @@ import { Notification } from '../components/ui/Notification.js'
 import { ProductService } from '../api/services/productService.js'
 import { SupplyService } from '../api/services/supplyService.js'
 import { MovementService } from '../api/services/movementService.js'
+import { StatisticsService } from '../api/services/statisticService.js'
+import { Charts } from '../components/ui/charts.js'
 import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
 import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtils.js'
+
+
+
 
 
 export const Dashboard = {
@@ -22,7 +27,7 @@ export const Dashboard = {
         <nav class="flex flex-col pl-2 h-[65vh]">
             <ul class="pt-8 list-none flex flex-col gap-2">
                 <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="inicio">
+                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="dashboard">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-layout-dashboard">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
@@ -30,7 +35,7 @@ export const Dashboard = {
                             <path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
                             <path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
                         </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Inicio</span>
+                        <span class="pl-3 text-xs lg:text-sm">Dashboard</span>
                     </button>
                 </li>
 
@@ -93,7 +98,8 @@ export const Dashboard = {
                         <span class="pl-3 text-xs lg:text-sm">Movimientos</span>
                     </button>
                 </li>
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
+                
+               <!-- <li class="flex flex-row items-center cursor-pointer w-[90%]">
                     <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="documentos">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-analytics">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -104,7 +110,8 @@ export const Dashboard = {
                         </svg>
                         <span class="pl-3 text-xs lg:text-sm">Documentos</span>
                     </button>
-                </li>
+                </li> -->
+                
             </ul>
         </nav>
 
@@ -127,12 +134,11 @@ export const Dashboard = {
 
                 <li class="flex flex-row items-center cursor-pointer w-[90%] mb-2">
                     <button id="settings" class="flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-text-secondary)] hover:border-[var(--color-text-secondary)] hover:text-white transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Configuraciones</span>
+                       <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20 " fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                    </svg>
+
+                        <span id="nav-button-username" class="pl-3 text-xs lg:text-sm">Usuario</span>
                     </button>
                 </li>
                 <li class="flex flex-row items-center cursor-pointer w-[90%] mb-2">
@@ -164,6 +170,27 @@ export const Dashboard = {
     },
     
     init(){
+
+
+        
+        const User = async() => {
+            try{
+                const usernameSpan = document.getElementById('nav-button-username');
+                const {username} = await AuthService.getUserInfo();
+                if(username){
+                    usernameSpan.textContent = username;
+                }
+            }
+            catch(error){
+                Notification.show('Error al logear el usuario: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+           
+        }
+
+        User()
+
         // Logout functionality
         const logout = document.getElementById('logout');
         logout.addEventListener('click', async (event) => {
@@ -210,46 +237,8 @@ export const Dashboard = {
             }
             
             switch(section) {
-                case 'inicio':
-                    dashboardContent.innerHTML = `
-                        <div class="bg-white p-8 rounded-lg shadow-md text-center mt-[8rem]">
-                            <div class="mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-blue-500">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                                    <polyline points="9,22 9,12 15,12 15,22"/>
-                                </svg>
-                            </div>
-                            <h2 class="text-3xl font-bold text-gray-900 mb-4">Bienvenido al Sistema PICM</h2>
-                            <p class="text-lg text-gray-600 mb-6">Sistema de gestión de inventario para cuadros de madera</p>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-blue-900">Productos</h3>
-                                    <p class="text-blue-700 text-sm">Gestiona tu inventario de productos</p>
-                                </div>
-                                <div class="bg-green-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-green-900">Categorías</h3>
-                                    <p class="text-green-700 text-sm">Organiza tus productos por categorías</p>
-                                </div>
-                                <div class="bg-yellow-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-yellow-900">Insumos</h3>
-                                    <p class="text-yellow-700 text-sm">Gestiona tus insumos</p>
-                                </div>
-                                <div class="bg-red-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-red-900">Proveedores</h3>
-                                    <p class="text-red-700 text-sm">Gestiona tus proveedores</p>
-                                </div>
-                                <div class="bg-orange-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-orange-900">Movimientos</h3>
-                                    <p class="text-orange-700 text-sm">Consulta tus movimientos de productos e insumos</p>
-                                </div>
-                                <div class="bg-purple-50 p-4 rounded-lg">
-                                    <h3 class="font-semibold text-purple-900">Reportes</h3>
-                                    <p class="text-purple-700 text-sm">Consulta estadísticas y reportes</p>
-                                </div>
-
-                            </div>
-                        </div>
-                    `;
+                case 'dashboard':
+                    window.renderDashboardHome();
                     break;
                     
                 case 'productos':
@@ -695,7 +684,7 @@ export const Dashboard = {
                 successMessage: 'Proveedor actualizado correctamente',
                 onSuccess: () => showSection('proveedores')
             })
-        }
+        };
 
         window.deleteSupplier = async (id) => {
             await confirmAndDelete({
@@ -757,7 +746,7 @@ export const Dashboard = {
             successMessage: 'Movimiento guardado correctamente',
             onSuccess: () => showSection('movimientos')
         })
-    }
+    };
 
 
         window.editMovement = async (id,tipoMovimiento) => {
@@ -825,7 +814,7 @@ export const Dashboard = {
                 successMessage: 'Movimiento actualizado correctamente',
                 onSuccess: () => showSection('movimientos')
             })
-        }
+        };
 
         window.deleteMovement = async (id,tipoMovimiento) => {
             await confirmAndDelete({
@@ -836,8 +825,160 @@ export const Dashboard = {
                 }
             });
         };
+
+        // Global functions for statistics actions
+        window.renderDashboardHome= async() => {                         
+            try {
+                
+                const [
+                    topProductsSales,
+                    topProductsEntries,
+                    monthlyMovements,
+                    productVolume
+                ] = await Promise.all([
+                    StatisticsService.getTopProductsSales(5, '30d'),
+                    StatisticsService.getTopProductsEntries(5, '30d'),
+                    StatisticsService.getMonthlyMovements(),
+                    StatisticsService.getProductMovementsVolume('30d')
+                ]);
+
+                const dashboardContent = document.getElementById('dashboard-content');
+                dashboardContent.innerHTML = `
+                    <div class="w-full max-w-7xl mx-auto">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                         <!-- Top Productos con más Entradas -->
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="h-80">
+                                    <canvas id="topEntriesChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="h-80">
+                                    <canvas id="topSalesChart"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            <!-- Volumen de Movimientos Mensuales -->
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="h-80">
+                                    <canvas id="monthlyMovementsChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Volumen de Entradas vs Salidas -->
+                            <div class="bg-white p-6 rounded-lg shadow-md">
+                                <div class="h-80">
+                                    <canvas id="volumeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Normalizing 
+                const normTopSales = Array.isArray(topProductsSales)
+                    ? topProductsSales
+                    : (topProductsSales?.results || topProductsSales?.data || []);
+                const normTopEntries = Array.isArray(topProductsEntries)
+                    ? topProductsEntries
+                    : (topProductsEntries?.results || topProductsEntries?.data || []);
+                const normMonthly = Array.isArray(monthlyMovements)
+                    ? monthlyMovements
+                    : (monthlyMovements?.results || monthlyMovements?.data || []);
+                const normVolume = (productVolume && (productVolume.data || productVolume)) || { entries: 0, sales: 0 };
+
+                // Render the graphics before DOM's ready
+                setTimeout(() => {
+                    window.renderCharts(normTopSales, normTopEntries, normMonthly, normVolume);
+                }, 100);
+
+            } catch (error) {
+                console.error('Error cargando dashboard:', error);
+                document.getElementById('dashboard-content').innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                        <h3 class="text-red-800 font-semibold mb-2">Error al cargar estadísticas</h3>
+                        <p class="text-red-600">${error.message}</p>
+                    </div>
+                `;
+            }
+        };
+
+        window.renderCharts = async (topSales, topEntries, monthlyMovements, volume) => {
+            
+
+            // Top lefty products graphic
+            Charts.renderBarChart('topSalesChart', {
+                labels: topSales.map(item => item.product_name),
+                datasets: [{
+                    label: 'Cantidad Vendida',
+                    data: topSales.map(item => item.total_quantity),
+                    backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                    borderColor: 'rgba(34, 197, 94, 0.8)',
+                    borderWidth: 1
+                }]
+            }, {
+                title: 'Top 5 Productos con más Salidas'
+            });
+
+            // Top entry products graphic
+            Charts.renderBarChart('topEntriesChart', {
+                labels: topEntries.map(item => item.product_name),
+                datasets: [{
+                    label: 'Cantidad Entrada',
+                    data: topEntries.map(item => item.total_quantity),
+                    backgroundColor: 'rgb(80, 158, 222)',
+                    borderColor: 'rgb(80, 158, 222)',
+                    borderWidth: 1
+                }]
+            }, {
+                title: 'Top 5 Productos con más Entradas'
+            });
+
+            // Monthly Graphic
+            Charts.renderLineChart('monthlyMovementsChart', {
+                labels: monthlyMovements.map(item => item.month),
+                datasets: [{
+                    label: 'Entradas',
+                    data: monthlyMovements.map(item => item.entries),
+                    borderColor: 'rgb(80, 158, 222)',
+                    backgroundColor: 'rgb(80, 158, 222)',
+                    tension: 0.1
+                }, {
+                    label: 'Salidas',
+                    data: monthlyMovements.map(item => item.sales),
+                    borderColor: 'rgba(34, 197, 94, 0.8)',
+                    backgroundColor: 'rgb(34, 197, 94)',
+                    tension: 0.1
+                }]
+            }, {
+                title: 'Tendencia de Movimientos por Mes'
+            });
+
+            // Circle Graphic
+            Charts.renderDoughnutChart('volumeChart', {
+                labels: ['Entradas', 'Salidas'],
+                datasets: [{
+                    data: [volume.entries, volume.sales],
+                    backgroundColor: [
+                        'rgba(80, 158, 222)',
+                        'rgba(34, 197, 94, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(80, 158, 222)',
+                        'rgba(34, 197, 94, 0.8)'
+                    ],
+                    borderWidth: 2
+                }]
+            }, {
+                title: 'Distribución de Volumen'
+            });
+        };
         
         // Show initial section
-        showSection('inicio');
+        showSection('dashboard');
     }   
 };
