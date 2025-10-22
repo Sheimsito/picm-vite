@@ -7,12 +7,13 @@ export class AuthService {
       const response = await apiClient.post(ENDPOINTS.AUTH.LOGIN, credentials);
       
       // Django REST Auth returns the token directly
-      if (response.key) {
-        apiClient.setAuthToken(response.key);
+      if(response.access){
+        apiClient.setAuthToken(response.access);
+        apiClient.setRefreshToken(response.refresh);
       }
-      
       return response;
     } catch (error) {
+      console.log(error)
       throw new Error(`${error.message}`);
     }
   }
@@ -25,6 +26,19 @@ export class AuthService {
       console.error('Logout error:', error);
     } finally {
       apiClient.removeAuthToken();
+    }
+  }
+
+  static async refreshToken(refreshToken){
+    try{
+      const response = await apiClient.post(ENDPOINTS.AUTH.REFRESH, {refresh: refreshToken});
+      if(response.access){
+        apiClient.setAuthToken(response.access);
+        apiClient.setRefreshToken(response.refresh);
+      }
+      return response;  
+    } catch (error) {
+      console.error('Refresh token error:', error);
     }
   }
 
@@ -56,6 +70,14 @@ export class AuthService {
       });
     } catch (error) {
       throw new Error(`Error al reestablecer la contraseña: ${error.message}`);
+    }
+  }
+
+  static async getUsersName() {
+    try {
+      return await apiClient.get(ENDPOINTS.AUTH.GET_USERS);
+    } catch (error) {
+      throw new Error(`Failed to get user info: ${error.message}`);
     }
   }
 

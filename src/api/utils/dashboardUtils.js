@@ -26,7 +26,6 @@ export function createSearchHandler(loaderFn, updaterFn, label) {
 export function openModalAndHandle({
     title,
     inputs,
-    selectOptions = [],
     submitText = 'Guardar',
     closeText = 'Cancelar',
     size = 'md',
@@ -38,7 +37,6 @@ export function openModalAndHandle({
     Modal.show({
         title,
         inputs,
-        selectOptions,
         showSubmitButton: true,
         submitText,
         closeText,

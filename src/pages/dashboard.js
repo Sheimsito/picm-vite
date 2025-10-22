@@ -1,11 +1,12 @@
 import '../css/dashboard.css'
 import { AuthService } from '../api/services/authService.js'
 import { Notification } from '../components/ui/Notification.js'
-import { Modal } from '../components/ui/modal.js'
 import { ProductService } from '../api/services/productService.js'
 import { SupplyService } from '../api/services/supplyService.js'
+import { MovementService } from '../api/services/movementService.js'
 import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
 import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtils.js'
+
 
 export const Dashboard = {
     render(){
@@ -292,12 +293,41 @@ export const Dashboard = {
                     break;
                     
                 case 'movimientos':
+                    const showMovimientos = async (movement) => {
+                        const movementsConfig = SectionFactory.createMovementSection(MovementService, movement);
+                        const movementsManager = new SectionManager(movementsConfig);
+                        
+                        window.changePage = (newPage) => movementsManager.changePage(newPage);
+                        
+                        await movementsManager.init();
+                        
+                    }
                     dashboardContent.innerHTML = `
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Movimientos</h3>
-                            <p class="text-gray-600">Contenido de movimientos próximamente...</p>
-                        </div>
+                            <div class="bg-white p-10 rounded-lg shadow-md text-center mt-[10rem]">
+                            <div class="mb-6">
+                                <svg class="mx-auto text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8h6m-6 4h6m-6 4h6M6 3v18l2-2 2 2 2-2 2 2 2-2 2 2V3l-2 2-2-2-2 2-2-2-2 2-2-2Z"/>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Elige qué movimientos deseas consultar</h2>
+                            <select class="w-full p-2 border border-gray-300 rounded" id="movimiento" name="movimiento" >
+                                <option value="" selected disabled>Selecciona el tipo de movimiento</option>
+                                <option value="productos">Productos</option>
+                                <option value="insumos">Insumos</option>
+                            </select>
+                            <button id="movimientos-button" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mt-4">Consultar</button>
+                            
                     `;
+
+                    document.getElementById('movimientos-button').addEventListener('click', () => {
+                        const value = document.getElementById('movimiento').value;
+                        if(value === ''){
+                            alert('Por favor, selecciona un tipo de movimiento');
+                            return;
+                        }
+                        showMovimientos(value);
+                    });
+               
                     break;
                     
                 case 'documentos':
@@ -342,9 +372,9 @@ export const Dashboard = {
                     { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del producto', name: 'nombre', id: 'nombre' },
                     { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del producto', name: 'descripcion', id: 'descripcion' },
                     { title: 'Precio', type: 'number', placeholder: 'Ingrese el precio del producto', name: 'precio', id: 'precio' },
-                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria' }
+                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria', options: selectOptions }
                 ],
-                selectOptions,
+                
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
@@ -369,9 +399,8 @@ export const Dashboard = {
                     { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del producto', name: 'nombre', id: 'nombre', value: name || '' },
                     { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del producto', name: 'descripcion', id: 'descripcion', value: description || '' },
                     { title: 'Precio', type: 'number', placeholder: 'Ingrese el precio del producto', name: 'precio', id: 'precio', value: price || '' },
-                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria', value: category || '' }
+                    { title: 'Categoría', type: 'select', placeholder: 'Seleccione la categoría del producto', name: 'categoria', id: 'categoria', value: category || '', options: selectOptions }
                 ],
-                selectOptions,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
@@ -396,6 +425,54 @@ export const Dashboard = {
                 onSuccess: () => showSection('productos')
             })
         };
+
+        window.increaseStockProduct = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Aumentar Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => ProductService.updateStock(id, payload, 'increase'),
+                    successMessage: 'Stock aumentado correctamente',
+                    onSuccess: () => showSection('productos')
+                })
+            }catch(error){
+                Notification.show('Error al aumentar stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+
+        window.decreaseStockProduct = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Disminuir Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => ProductService.updateStock(id, payload, 'decrease'),
+                    successMessage: 'Stock disminuido correctamente',
+                    onSuccess: () => showSection('productos')
+                })
+            }catch(error){
+                Notification.show('Error al disminuir stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
 
 
         // Global functions for category actions
@@ -466,9 +543,9 @@ export const Dashboard = {
                     { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del insumo', name: 'nombre', id: 'nombre' },
                     { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del insumo', name: 'descripcion', id: 'descripcion' },
                     { title: 'Precio Unitario', type: 'number', placeholder: 'Ingrese el precio unitario del insumo', name: 'precio', id: 'precio' },
-                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor' }
+                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor', options: selectOptions }
                 ],
-                selectOptions,
+                
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
@@ -493,9 +570,8 @@ export const Dashboard = {
                     { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del insumo', name: 'nombre', id: 'nombre', value: name || '' },
                     { title: 'Descripción', type: 'text', placeholder: 'Ingrese la descripción del insumo', name: 'descripcion', id: 'descripcion', value: description || '' },
                     { title: 'Precio Unitario', type: 'number', placeholder: 'Ingrese el precio unitario del insumo', name: 'precio', id: 'precio', value: unitaryPrice || '' },
-                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor', value: supplier || '' }
+                    { title: 'Proveedor Asociado', type: 'select', placeholder: 'Seleccione el proveedor asociado', name: 'proveedor', id: 'proveedor', value: supplier || '', options: selectOptions }
                 ],
-                selectOptions,
                 submitText: 'Guardar',
                 closeText: 'Cancelar',
                 size: 'lg',
@@ -521,7 +597,54 @@ export const Dashboard = {
             });
         };
 
-
+        window.increaseStockSupply = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Aumentar Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => SupplyService.updateStock(id, payload, 'increase'),
+                    successMessage: 'Stock aumentado correctamente',
+                    onSuccess: () => showSection('insumos')
+                })
+            }catch(error){
+                Notification.show('Error al aumentar stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+        
+        window.decreaseStockSupply = async (id) => {
+            try{
+                openModalAndHandle({
+                    title: 'Disminuir Stock',
+                    inputs: [
+                        { title: 'Cantidad', type: 'number', placeholder: 'Ingrese la cantidad', name: 'cantidad', id: 'cantidad' }
+                    ],
+                    submitText: 'Guardar',
+                    closeText: 'Cancelar',
+                    size: 'md',
+                    buildPayload: () => ({
+                        stock: document.getElementById('cantidad').value,
+                    }),
+                    apiCall: (payload) => SupplyService.updateStock(id, payload, 'decrease'),
+                    successMessage: 'Stock disminuido correctamente',
+                    onSuccess: () => showSection('insumos')
+                })
+            }catch(error){
+                Notification.show('Error al disminuir stock: ' + error.message, 'error', {
+                    duration: 4000
+                });
+            }
+        }
+        
         // Global functions for supplier actions
         window.openAddSupplierModal = () => openModalAndHandle({
             title: 'Agregar Proveedor',
@@ -583,6 +706,137 @@ export const Dashboard = {
                 }
             });
         };
+
+        // Global functions for movements actions
+        
+        window.openAddMovementModal = async (tipoMovimiento) => {
+
+            // Options for Item
+            let items = [];
+            if (tipoMovimiento === 'productos') {
+                items = await ProductService.getProductsName();
+            } else {
+                items = await SupplyService.getSuppliesName();
+            }
+            // Options for User
+            const users = await AuthService.getUsersName();
+            const names = users.map(u => u.username);
+
+            let tipo = '';
+            let placeholder = '';
+            let name = '';
+            if (tipoMovimiento === 'productos') {
+               tipo = 'Producto';
+               name = 'product_name';
+               placeholder = 'Ingrese el producto';
+            } else {
+                tipo = 'Insumo';
+                name = 'supply_name';
+                placeholder = 'Ingrese el insumo';
+            }
+            openModalAndHandle({
+            title: 'Agregar Movimiento',
+            inputs: [
+                { title: tipo, type: 'select', placeholder: placeholder, name: name, id: name, options: items || [] },
+                { title: 'Usuario', type: 'select', placeholder: 'Ingrese el usuario', name: 'usuario', id: 'usuario', options: names || [] },
+                { title: 'Tipo de modificación', type: 'select', placeholder: 'Ingrese el tipo de modificación', name: 'tipoModificacion', id: 'tipoModificacion', options: ['Entrada', 'Salida'] },
+                { title: 'Stock modificado', type: 'number', placeholder: 'Ingrese el stock modificado', name: 'stockModificado', id: 'stockModificado' },
+                { title: 'Comentario', type: 'text', placeholder: 'Ingrese el comentario', name: 'comentario', id: 'comentario' },
+            ],
+            submitText: 'Guardar',
+            closeText: 'Cancelar',
+            size: 'lg',
+            buildPayload: () => ({
+                [`${name}`]: document.getElementById(name).value,
+                user: document.getElementById('usuario').value,
+                modificationType: document.getElementById('tipoModificacion').value,
+                modifiedStock: document.getElementById('stockModificado').value,
+                comentary: document.getElementById('comentario').value,
+            }),
+            apiCall: (payload) => MovementService.createMovement(tipoMovimiento,payload),
+            successMessage: 'Movimiento guardado correctamente',
+            onSuccess: () => showSection('movimientos')
+        })
+    }
+
+
+        window.editMovement = async (id,tipoMovimiento) => {
+            const data = await MovementService.getMovementById(id, tipoMovimiento);
+
+            const { user, modificationType, modifiedStock, comentary, dateHourCreation } = data;
+            const itemName = tipoMovimiento === 'productos' ? data.product : data.supply;
+
+            const iso = new Date(dateHourCreation).toISOString();
+
+            // Options for Movement Type
+            const selectOptions = [
+                'Entrada',
+                'Salida'
+            ];
+
+            // Options for User
+            const users = await AuthService.getUsersName();
+            const names = users.map(u => u.username);
+
+            // Options for Item
+            let items = [];
+            if (tipoMovimiento === 'productos') {
+                items = await ProductService.getProductsName();
+            } else {
+                items = await SupplyService.getSuppliesName();
+            }
+
+            let tipo = '';
+            let placeholder = '';
+            let name = '';
+            if (tipoMovimiento === 'productos') {
+               tipo = 'Producto';
+               name = 'product_name';
+               placeholder = 'Ingrese el producto';
+            } else {
+                tipo = 'Insumo';
+                name = 'supply_name';
+                placeholder = 'Ingrese el insumo';
+            }
+            openModalAndHandle({
+                title: 'Editar Movimiento',
+                inputs: [
+                    { title: `${tipo}`, type: 'select', placeholder: placeholder, name: 'supply', id: `${tipo.toLowerCase()}`, value: itemName || '', options: items },
+                    { title: 'Usuario Relacionado', type: 'select', placeholder: 'Ingrese el usuario', name: 'user', id: 'user', value: user || '', options: names },
+                    { title: 'Tipo de modificación', type: 'select', placeholder: 'Ingrese el tipo de modificación', name: 'modificationType', id: 'modificationType', options: selectOptions, value: modificationType || '' },
+                    { title: 'Stock modificado', type: 'number', placeholder: 'Ingrese el stock modificado', name: 'modifiedStock', id: 'modifiedStock', value: modifiedStock || '' },
+                    { title: 'Comentario', type: 'text', placeholder: 'Ingrese el comentario', name: 'comentary', id: 'comentary', value: comentary || '' },
+                    { title: 'Fecha de creación', type: 'date', placeholder: 'Ingrese la fecha de creación', name: 'dateHourCreation', id: 'dateHourCreation', value: iso.split('T')[0] || '' },
+                    
+                ],
+                submitText: 'Guardar',
+                closeText: 'Cancelar',
+                selectOptions,
+                size: 'lg',
+                buildPayload: () => ({
+                    [`${name}`]: document.getElementById(`${tipo.toLowerCase()}`).value,
+                    user: document.getElementById('user').value,
+                    modificationType: document.getElementById('modificationType').value,
+                    modifiedStock: document.getElementById('modifiedStock').value,
+                    comentary: document.getElementById('comentary').value,
+                    dateHourCreation: document.getElementById('dateHourCreation').value,
+                }),
+                apiCall: (payload) => MovementService.updateMovement(id,tipoMovimiento, payload),
+                successMessage: 'Movimiento actualizado correctamente',
+                onSuccess: () => showSection('movimientos')
+            })
+        }
+
+        window.deleteMovement = async (id,tipoMovimiento) => {
+            await confirmAndDelete({
+                confirmText: '¿Estás seguro de que quieres eliminar este movimiento?',
+                deleteFn: async () => {
+                    await MovementService.deleteMovement(id,tipoMovimiento);
+                    showSection('movimientos');
+                }
+            });
+        };
+        
         // Show initial section
         showSection('inicio');
     }   

@@ -4,21 +4,24 @@ export const ENDPOINTS = {
     AUTH: {
       LOGIN: '/auth/login', 
       LOGOUT: '/auth/logout', 
-      REFRESH: '/auth/token/refresh/',
+      REFRESH: '/auth/refresh-token',
       REGISTER: '/auth/registration/',
       PASSWORD_RESET: '/auth/password-reset',
       PASSWORD_RESET_CONFIRM: '/auth/confirm-reset-password',
-      USER: '/auth/user/'
+      USER: '/auth/user/',
+      GET_USERS: '/auth/get-users-name',
     },
  
     PRODUCTS: {
       // PRODUCTS ENDPOINTS
       GET_PRODUCTS: '/products/get',
+      GET_PRODUCTS_NAME: '/products/get-products-name',
       CREATE_PRODUCT: '/products/create',
       GET_ALL_PRODUCTS: '/products/total-stock',
       GET_ALL_VALUE: '/products/total-stock-value',
       BY_ID: (id) => `/products/get/${id}`,
       UPDATE_PRODUCT: (id) => `/products/update/${id}`,
+      UPDATE_STOCK: (id) => `/products/update-stock/${id}`,
       DELETE_PRODUCT: (id) => `/products/delete/${id}`,
       SEARCH:  `/products/search/ `,
 
@@ -41,8 +44,10 @@ export const ENDPOINTS = {
       CREATE_SUPPLY: `/supplies/create`,
       GET_SUPPLIES_TOTAL_STOCK: `/supplies/total-stock`,
       GET_SUPPLIES_ALL_VALUE: `/supplies/total-inventory-value`,
+      GET_SUPPLIES_NAME: `/supplies/get-supplies-name`,
       BY_ID: (id) => `/supplies/get/${id}`,
       UPDATE_SUPPLY: (id) => `/supplies/update/${id}`,
+      UPDATE_STOCK: (id) => `/supplies/update-stock/${id}`,
       DELETE_SUPPLY: (id) => `/supplies/delete/${id}`,
 
       // SUPPLIER ENDPOINTS
@@ -56,7 +61,11 @@ export const ENDPOINTS = {
     
     // Movimientos
     MOVEMENTS: {
-      BASE: '/movements/',
-      BY_ID: (id) => `/movements/${id}/`
+      GET_MOVEMENTS: `/movements/get-movements`,
+      CREATE_MOVEMENT: `/movements/create-movement`,
+      GET_MOVEMENT_BY_ID: (id,tipoMovimiento) => `/movements/get-movement/${id}/${tipoMovimiento}`,
+      UPDATE_MOVEMENT: (id,tipoMovimiento) => `/movements/update-movement/${id}/${tipoMovimiento}`,
+      CREATE_MOVEMENT: (tipoMovimiento) => `/movements/create-movement/${tipoMovimiento}`,
+      DELETE_MOVEMENT: (id,tipoMovimiento) => `/movements/delete-movement/${id}/${tipoMovimiento}`,
     }
   };

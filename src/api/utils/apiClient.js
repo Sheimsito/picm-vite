@@ -21,9 +21,14 @@ class ApiClient {
   
     const token = this.getAuthToken();
     if (token) {
-      config.headers.Authorization = `Token ${token}`; 
+      config.headers.Authorization = `Bearer ${token}`; 
     }
 
+    if(!token){
+      setTimeout(() => {
+        window.location.href = '#/login';
+      }, 1000);
+    }
 
     const csrfToken = this.getCSRFToken();
     if (csrfToken) {
@@ -32,7 +37,6 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         
@@ -89,6 +93,14 @@ class ApiClient {
 
   setAuthToken(token) {
     localStorage.setItem('authToken', token);
+  }
+  
+  setRefreshToken(token) {
+    localStorage.setItem('refreshToken', token);
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem('refreshToken');
   }
 
   removeAuthToken() {

@@ -24,9 +24,29 @@ export class ProductService {
         }
     }
 
+    static async getProductsName(){
+        try{
+            const url = `${ENDPOINTS.PRODUCTS.GET_PRODUCTS_NAME}`
+            const response = await apiClient.get(url)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
     static async updateProduct(id,data){
         try{
             const url = `${ENDPOINTS.PRODUCTS.UPDATE_PRODUCT(id)}`
+            const response = await apiClient.put(url,data)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
+    static async updateStock(id,data,option){
+        try{
+            const url = `${ENDPOINTS.PRODUCTS.UPDATE_STOCK(id)}?${option}=true`
             const response = await apiClient.put(url,data)
             return response
         }catch(error){
