@@ -17,6 +17,15 @@ export class SupplyService {
         }
     }
 
+    static async getSuppliesName(){
+        try{
+            const response = await apiClient.get(ENDPOINTS.SUPPLIES.GET_SUPPLIES_NAME);
+            return response;
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
     static async getSuppliesById(id){
         try{
             const response = await apiClient.get(ENDPOINTS.SUPPLIES.BY_ID(id));

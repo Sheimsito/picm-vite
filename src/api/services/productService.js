@@ -24,6 +24,16 @@ export class ProductService {
         }
     }
 
+    static async getProductsName(){
+        try{
+            const url = `${ENDPOINTS.PRODUCTS.GET_PRODUCTS_NAME}`
+            const response = await apiClient.get(url)
+            return response
+        }catch(error){
+            throw new Error(`${error.message}`);
+        }
+    }
+
     static async updateProduct(id,data){
         try{
             const url = `${ENDPOINTS.PRODUCTS.UPDATE_PRODUCT(id)}`

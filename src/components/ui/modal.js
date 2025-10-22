@@ -7,7 +7,6 @@ export const Modal = {
         content = '',
         amountOfInput = 0,
         inputs = [],
-        selectOptions = [],
         show = false,
         onClose = null,
         onSubmit = null,
@@ -41,15 +40,24 @@ export const Modal = {
                 <label for="${input.id || `input-${index}`}" class="block text-sm font-medium text-black mb-2">
                     ${input.title}
                 </label>
+
                 ${input.type === 'select' ? `
                     <select 
                         id="${input.id || `input-${index}`}"
                         name="${input.name || `input-${index}`}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg "
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg"
                         ${input.required ? 'required' : ''}
                         ${input.disabled ? 'disabled' : ''}
                     >
-                        ${selectOptions.map(option => `<option class="text-gray-600 text-sm font-normal bg-white" value="${option}" ${input.value === option ? 'selected' : ''}>${option}</option>`).join('')}
+                        ${(input.options || []).map(option => `
+                            <option 
+                                class="text-gray-600 text-sm font-normal bg-white" 
+                                value="${option}" 
+                                ${input.value === option ? 'selected' : ''}
+                            >
+                                ${option}
+                            </option>
+                        `).join('')}
                     </select>
                 ` : `
                     <input 
@@ -63,9 +71,11 @@ export const Modal = {
                         ${input.disabled ? 'disabled' : ''}
                     />
                 `}
+
                 ${input.error ? `<p class="text-red-500 text-xs mt-1">${input.error}</p>` : ''}
             </div>
         `).join('');
+
         return `
         <div class="fixed inset-0 z-50 ${show ? 'flex' : 'hidden'} items-center justify-center backdrop-blur bg-black/40  transition-opacity duration-300">
             <div class="bg-white rounded-lg shadow-xl ${sizeClasses[size]} w-full mx-4 transform transition-all duration-300 ${show ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}">
