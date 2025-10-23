@@ -5,6 +5,7 @@ import { ProductService } from '../api/services/productService.js'
 import { SupplyService } from '../api/services/supplyService.js'
 import { MovementService } from '../api/services/movementService.js'
 import { StatisticsService } from '../api/services/statisticService.js'
+import { ReportService } from '../api/services/reportService.js'
 import { Charts } from '../components/ui/charts.js'
 import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
 import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtils.js'
@@ -282,15 +283,6 @@ export const Dashboard = {
                     break;
                     
                 case 'movimientos':
-                    const showMovimientos = async (movement) => {
-                        const movementsConfig = SectionFactory.createMovementSection(MovementService, movement);
-                        const movementsManager = new SectionManager(movementsConfig);
-                        
-                        window.changePage = (newPage) => movementsManager.changePage(newPage);
-                        
-                        await movementsManager.init();
-                        
-                    }
                     dashboardContent.innerHTML = `
                             <div class="bg-white p-10 rounded-lg shadow-md text-center mt-[10rem]">
                             <div class="mb-6">
@@ -665,7 +657,7 @@ export const Dashboard = {
                 title: 'Editar Proveedor',
                 inputs: [
                     { title: 'Nombre', type: 'text', placeholder: 'Ingrese el nombre del proveedor', name: 'nombre', id: 'nombre', value: name || '' },
-                    { title: 'NIT', type: 'text', placeholder: 'Ingrese el NIT del proveedor', name: 'nit', id: 'nit', value: nit || '' },
+                    { title: 'NIT', type: 'text', placeholder: 'Ingrese el NIT del proveedor', name: 'nit', id: 'nit', value: nit || '', disabled: true },
                     { title: 'Telefono', type: 'text', placeholder: 'Ingrese el telefono del proveedor', name: 'telefono', id: 'telefono', value: phone || '' },
                     { title: 'Correo', type: 'text', placeholder: 'Ingrese el correo del proveedor', name: 'correo', id: 'correo', value: email || '' },
                     { title: 'Dirección', type: 'text', placeholder: 'Ingrese la dirección del proveedor', name: 'direccion', id: 'direccion', value: address || '' },
@@ -744,7 +736,7 @@ export const Dashboard = {
             }),
             apiCall: (payload) => MovementService.createMovement(tipoMovimiento,payload),
             successMessage: 'Movimiento guardado correctamente',
-            onSuccess: () => showSection('movimientos')
+            onSuccess: () => showMovimientos(tipoMovimiento)
         })
     };
 
@@ -812,7 +804,7 @@ export const Dashboard = {
                 }),
                 apiCall: (payload) => MovementService.updateMovement(id,tipoMovimiento, payload),
                 successMessage: 'Movimiento actualizado correctamente',
-                onSuccess: () => showSection('movimientos')
+                onSuccess: () => showMovimientos(tipoMovimiento)
             })
         };
 
@@ -821,9 +813,17 @@ export const Dashboard = {
                 confirmText: '¿Estás seguro de que quieres eliminar este movimiento?',
                 deleteFn: async () => {
                     await MovementService.deleteMovement(id,tipoMovimiento);
-                    showSection('movimientos');
+                    showMovimientos(tipoMovimiento);
                 }
             });
+        };
+
+
+        window.showMovimientos = async (movement) => {
+            const movementsConfig = SectionFactory.createMovementSection(MovementService, movement);
+            const movementsManager = new SectionManager(movementsConfig);
+            window.changePage = (newPage) => movementsManager.changePage(newPage);
+            await movementsManager.init();
         };
 
         // Global functions for statistics actions
@@ -978,6 +978,19 @@ export const Dashboard = {
             });
         };
         
+        window.openPDF = (id, tipo) => {
+            if(tipo === 'productos'){
+                ReportService.downloadProductReportById(id).then(response => {
+                    ReportService.openPDF(response);
+                });
+            }
+            if(tipo === 'insumos'){
+                ReportService.downloadSupplyReportById(id).then(response => {
+                    ReportService.openPDF(response);
+                });
+            }
+        };
+
         // Show initial section
         showSection('dashboard');
     }   

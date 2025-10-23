@@ -106,7 +106,11 @@ export const Table = {
                             if (dataFields.length > 0) {
                                 return dataFields.map((field, cellIndex) => {
                                     let value = row[field] !== null && row[field] !== undefined ? row[field] : '';
-                                    
+                                
+                                
+                                if(field === "pdf"){
+                                    value = `<button onclick="openPDF('${row.id}','${headers[1]}')" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Ver PDF</button>`.trim();
+                                }    
                                 if (field === "stock") {
 
                                         const isSupply = headers[3] === "Precio Unitario";

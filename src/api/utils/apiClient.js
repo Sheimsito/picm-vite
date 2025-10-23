@@ -37,17 +37,44 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        
-        throw new Error(
-          errorData.error ||
-          errorData.message ||
-          `HTTP error! status: ${response.status}`
-        );
+        // Try to parse error as JSON; if not JSON, fall back to text
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const contentType = response.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+          } else {
+            const text = await response.text();
+            errorMessage = text || errorMessage;
+          }
+        } catch (_) {
+          // ignore parsing errors, use default error message
+        }
+        throw new Error(errorMessage);
       }
-      
-      return await response.json();
+
+      // Success path: honor explicit responseType if provided
+      if (config.responseType === 'blob') {
+        return await response.blob();
+      }
+
+      // Otherwise, infer by content-type header
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        return await response.json();
+      }
+      if (
+        contentType.includes('application/pdf') ||
+        contentType.includes('application/octet-stream')
+      ) {
+        return await response.blob();
+      }
+
+      // Fallback to text
+      return await response.text();
     } catch (error) {
       console.error('API Request failed:', error);
       throw error;
