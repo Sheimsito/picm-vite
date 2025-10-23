@@ -85,5 +85,10 @@ export const ENDPOINTS = {
       // GENERAL STATISTICS
       MONTHLY_MOVEMENTS: '/statistics/monthly-movements',
       CATEGORY_DISTRIBUTION: '/statistics/category-distribution'
+    },
+
+    REPORTS:{
+      DOWNLOAD_PRODUCT_REPORT_BY_ID: (id) => `/reports/download-product-report/${id}`,
+      DOWNLOAD_SUPPLY_REPORT_BY_ID: (id) => `/reports/download-supply-report/${id}`,
     }
   };

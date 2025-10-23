@@ -1,6 +1,6 @@
 # 🏭 PICM-VITE - Sistema de Gestión de Inventario
 
-Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaScript Vanilla** y **Tailwind CSS**. Diseñado para gestionar productos, categorías, insumos, proveedores y movimientos de inventario de manera eficiente.
+Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaScript Vanilla** y **Tailwind CSS**. Diseñado para gestionar productos, categorías, insumos, proveedores y movimientos de inventario de manera eficiente, realizado como proyecto académico para la asignatura Desarrollo de Software.
 
 ## 📋 Tabla de Contenidos
 
@@ -29,8 +29,9 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - ⚡ **Sistema de Secciones**: Gestión dinámica de secciones del dashboard
 - 🔍 **Búsqueda Avanzada**: Filtros y búsqueda en tiempo real
 - 📄 **Paginación Inteligente**: Navegación eficiente por grandes volúmenes de datos
-- 💰 **Movimientos**: Registro de entradas y salidas de inventario (Pendiente)
-- 📄 **Documentos**: Generación y gestión de documentos del sistema (Pendiente)
+- 💰 **Movimientos**: Registro de entradas y salidas de inventario con filtros avanzados
+- 📄 **Reportes PDF**: Descarga de reportes de movimientos de productos e insumos
+- 📊 **Estadísticas**: Dashboard con gráficos y métricas de rendimiento
 
 ## 🛠️ Tecnologías
 
@@ -39,6 +40,7 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - **JavaScript ES6+** - Lenguaje principal
 - **Tailwind CSS** - Framework de CSS utilitario
 - **CSS Modules** - Estilos organizados por componentes
+- **Chart.js** - Librería para gráficos interactivos
 
 ### Arquitectura
 - **SPA (Single Page Application)** - Navegación sin recarga de página
@@ -108,6 +110,18 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - 🔍 **Buscar**: Filtrado en tiempo real
 - 📄 **Paginación**: Navegación por páginas
 
+### Gestión de Movimientos
+- 📊 **Filtros Avanzados**: Por tipo de movimiento, fechas y productos/insumos
+- 📈 **Estadísticas**: Visualización de tendencias y métricas
+- 📄 **Reportes PDF**: Descarga de reportes detallados de movimientos
+- 🔄 **Gestión de Stock**: Actualización automática de inventarios
+
+### Sistema de Reportes
+- 📋 **Reportes de Productos**: Descarga de PDF con historial de movimientos
+- 📦 **Reportes de Insumos**: Documentación completa de transacciones
+- 🎯 **Integración Directa**: Botones de descarga integrados en las tablas
+- 💾 **Descarga Automática**: Generación y descarga instantánea de archivos
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -123,7 +137,10 @@ picm-vite/
 │   │   ├── services/
 │   │   │   ├── authService.js   # Servicios de autenticación
 │   │   │   ├── productService.js # Servicios de productos
-│   │   │   └── supplyService.js # Servicios de insumos y proveedores
+│   │   │   ├── supplyService.js # Servicios de insumos y proveedores
+│   │   │   ├── movementService.js # Servicios de movimientos
+│   │   │   ├── statisticService.js # Servicios de estadísticas
+│   │   │   └── reportService.js # Servicios de reportes PDF
 │   │   └── utils/
 │   │       ├── apiClient.js     # Cliente HTTP
 │   │       ├── dashboardUtils.js # Utilidades del dashboard
@@ -132,7 +149,8 @@ picm-vite/
 │   │   └── ui/
 │   │       ├── modal.js         # Componente modal
 │   │       ├── Notification.js  # Sistema de notificaciones
-│   │       └── table.js         # Tabla de datos
+│   │       ├── table.js         # Tabla de datos
+│   │       └── charts.js        # Componentes de gráficos
 │   ├── css/
 │   │   ├── components.css       # Estilos de componentes
 │   │   ├── dashboard.css        # Estilos del dashboard
@@ -196,8 +214,22 @@ picm-vite/
 - `PUT /supplies/update-supplier/{id}` - Actualizar proveedor
 - `DELETE /supplies/delete-supplier/{id}` - Eliminar proveedor
 
-### Módulos Futuros
-- **Movimientos**: `/movements/`
+### Movimientos
+- `GET /movements/get-movements` - Obtener movimientos (paginado)
+- `POST /movements/create-movement/{tipo}` - Crear movimiento
+- `GET /movements/get-movement/{id}/{tipo}` - Obtener movimiento por ID
+- `PUT /movements/update-movement/{id}/{tipo}` - Actualizar movimiento
+- `DELETE /movements/delete-movement/{id}/{tipo}` - Eliminar movimiento
+
+### Estadísticas
+- `GET /statistics/top-products-sales` - Top productos con más salidas
+- `GET /statistics/top-products-entries` - Top productos con más entradas
+- `GET /statistics/product-movements-volume` - Volumen de movimientos de productos
+- `GET /statistics/monthly-movements` - Movimientos mensuales
+
+### Reportes
+- `GET /reports/download-product-report/{id}` - Descargar reporte PDF de producto
+- `GET /reports/download-supply-report/{id}` - Descargar reporte PDF de insumo
 
 ## ✅ Funcionalidades Implementadas
 
@@ -214,6 +246,8 @@ picm-vite/
 - [x] Secciones organizadas por módulos
 - [x] Diseño moderno y profesional
 - [x] Sistema de gestión de secciones dinámico
+- [x] Gráficos interactivos con Chart.js
+- [x] Estadísticas de rendimiento en tiempo real
 
 ### 🛍️ Gestión de Productos
 - [x] Listado con paginación
@@ -246,27 +280,46 @@ picm-vite/
 - [x] Validación de formularios
 - [x] Integración con insumos
 
+### 💰 Gestión de Movimientos
+- [x] Registro de entradas y salidas
+- [x] Filtros avanzados por tipo y fecha
+- [x] Búsqueda en tiempo real
+- [x] CRUD completo
+- [x] Integración con productos e insumos
+- [x] Gestión de stock automática
+
+### 📄 Sistema de Reportes
+- [x] Descarga de reportes PDF
+- [x] Reportes de movimientos de productos
+- [x] Reportes de movimientos de insumos
+- [x] Integración con sistema de movimientos
+
 ### 🎨 Componentes UI
 - [x] Modal dinámico y reutilizable
 - [x] Sistema de notificaciones
 - [x] Tabla de datos con funcionalidades avanzadas
 - [x] Formularios con validación
 - [x] Sistema de gestión de secciones reutilizable
+- [x] Componentes de gráficos interactivos
+- [x] Botones de descarga de PDF integrados
 
 ## 🚧 Estado del Desarrollo
 
 ### ✅ Completado
 - Sistema de autenticación completo
-- Dashboard principal funcional
+- Dashboard principal funcional con gráficos
 - Gestión completa de productos
 - Gestión completa de categorías
 - Gestión completa de insumos
 - Gestión completa de proveedores
+- Gestión completa de movimientos
+- Sistema de reportes PDF
 - Componentes UI base
 - Sistema de gestión de secciones dinámico
 - Integración con API backend
 - Sistema de notificaciones
 - Modales dinámicos y reutilizables
+- Gráficos interactivos con Chart.js
 
 ### 🔄 En Desarrollo
 - Optimización del responsive design
@@ -275,14 +328,14 @@ picm-vite/
 - Refactorización de servicios (reducción de código duplicado)
 
 ### 📋 Pendiente
-- [ ] Módulo de Movimientos
-- [ ] Módulo de Documentos
-- [ ] Sistema de reportes
+- [ ] Módulo de Documentos adicionales
 - [ ] Optimización completa del responsive design
 - [ ] Testing automatizado
 - [ ] Documentación de API
 - [ ] Refactorización completa de servicios
 - [ ] Implementación de caché para mejor rendimiento
+- [ ] Exportación de datos en múltiples formatos
+- [ ] Sistema de alertas y notificaciones avanzadas
 
 ## ⚠️ Notas Importantes
 

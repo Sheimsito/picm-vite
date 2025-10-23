@@ -68,7 +68,7 @@ export const Modal = {
                         value="${input.value || (input.type === 'number' ? '0' : '')}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-transparent transition-colors duration-200"
                         ${input.required ? 'required' : ''}
-                        ${input.disabled ? 'disabled' : ''}
+                        ${input.disabled ? 'disabled ' : ''}
                     />
                 `}
 

@@ -63,9 +63,17 @@ export class SectionManager {
                 });
             });
         }
+
+        if (this.config.sectionKey === 'movimientos') {
+            return {
+                data: this.addActionButtons(data, 'PDF'),
+                totalItems: response.count || data.length,
+                currentPage: page
+            };
+        }
         
         return {
-            data: this.addActionButtons(data),
+            data: this.addActionButtons(data, ''),
             totalItems: response.count || data.length,
             currentPage: page
         };
@@ -74,11 +82,20 @@ export class SectionManager {
     /**
      * Add action buttons to the data
      */
-    addActionButtons(data) {
-        return data.map(item => ({
-            ...item,
-            acciones: this.config.actionButtons(item)
-        }));
+    addActionButtons(data, pdfField = '') {
+        if (pdfField === 'PDF') {
+            return data.map(item => ({
+                ...item,
+                pdf: item.pdf,
+                acciones: this.config.actionButtons(item)
+            }));
+        }
+        else{
+            return data.map(item => ({
+                ...item,
+                acciones: this.config.actionButtons(item)
+            }));
+        }
     }
 
     /**
@@ -622,7 +639,7 @@ export const SectionFactory = {
             `,
             tableRenderer: (data) => {
                 return Table.render({
-                    headers: ['ID', tipoMovimiento , 'Usuario relacionado', 'Tipo de modificación', 'Stock modificado','Comentario' ,'Fecha de creación', 'Fecha de modificación', 'Acciones'],
+                    headers: ['ID', tipoMovimiento , 'Usuario relacionado', 'Tipo de modificación', 'Stock modificado','Comentario' ,'Fecha de creación', 'Fecha de modificación','PDF','Acciones'],
                     body: data.data,
                     dataFields: data.data.length > 0 ? Object.keys(data.data[0]) : [],
                     striped: true,
