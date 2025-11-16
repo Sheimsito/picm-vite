@@ -10,7 +10,6 @@ export const ENDPOINTS = {
       PASSWORD_RESET_CONFIRM: '/auth/confirm-reset-password',
       USER: '/auth/user',
       GET_USERS: '/auth/get-users-name',
-  
     },
  
     PRODUCTS: {
@@ -90,5 +89,8 @@ export const ENDPOINTS = {
     REPORTS:{
       DOWNLOAD_PRODUCT_REPORT_BY_ID: (id) => `/reports/download-product-report/${id}`,
       DOWNLOAD_SUPPLY_REPORT_BY_ID: (id) => `/reports/download-supply-report/${id}`,
-    }
+    },
+    CHATBOT:{
+      TALK: '/chatbot/chat',
+    },
   };

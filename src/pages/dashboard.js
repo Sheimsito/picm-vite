@@ -9,6 +9,9 @@ import { ReportService } from '../api/services/reportService.js'
 import { Charts } from '../components/ui/charts.js'
 import { SectionManager, SectionFactory } from '../api/utils/sectionManager.js'
 import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtils.js'
+import { chat, userChat, botChat} from '../components/ui/chat.js'
+import { chatbotService } from '../api/services/chatbotService.js'
+
 
 
 
@@ -165,6 +168,9 @@ export const Dashboard = {
         <div id="dashboard-content" class="p-4 lg:p-6 flex flex-col gap-4 justify-center items-center ">
             <!-- El contenido se cargará aquí dinámicamente -->
         </div>
+
+    <!-- Aquí se insertará el chat -->  
+        <div id="chat-modal"> </div>
     </main>
     </div>
         `;
@@ -211,6 +217,65 @@ export const Dashboard = {
                 });
             }
         });
+
+        const help = document.getElementById('help');
+        const chatContainer = document.getElementById("chat-modal");
+        help.addEventListener("click", () => {
+
+            // Si ya está abierto → cerrarlo
+            if (chatContainer.innerHTML.trim() !== "") {
+                chatContainer.innerHTML = "";
+                return;
+            }
+
+            // Crear overlay + chat
+            chatContainer.innerHTML = `
+                ${chat.render({ newBotMessage: "¡Qué tal!<br>¿Cómo te puedo ayudar hoy?" })}
+            `;
+
+            // Cerrar al click en overlay
+            document.getElementById("chat-overlay").addEventListener("click", () => {
+                chatContainer.innerHTML = "";
+            });
+              
+
+            const sendBtn = document.getElementById('send-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatBody = document.getElementById('chat-body');
+
+         
+            sendBtn.addEventListener("click", async () => {
+
+                const texto = chatInput.value.trim();
+                if (!texto) return;
+
+              
+                chatBody.innerHTML += userChat.render({ message: texto });
+
+                chatInput.value = "";
+
+    
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                try{
+                    const response = await chatbotService.talk(texto);
+                    chatBody.innerHTML += botChat.render({ newBotMessage: response.message});
+                }
+                catch(error){
+                    Notification.show('Error al enviar el mensaje: ' + error.message, 'error', {
+                        duration: 4000
+                    });
+                }
+                
+            });
+        });
+
+       
+        
+
+     
+
+
 
         // Navigation functionality
         const navButtons = document.querySelectorAll('.dashboard-nav-button');
