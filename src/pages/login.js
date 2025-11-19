@@ -11,7 +11,7 @@ export const Login = {
     <main class="main-login">
         <section class="section-login">
             <h1>Iniciar sesión</h1>
-            <form id="loginForm" role="form">
+            <form id="loginForm" class="form" role="form">
                 <div class="input-group">
                     <label for="username" class="label-login">Usuario</label>
                     <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required autocomplete="username" class="input-login">

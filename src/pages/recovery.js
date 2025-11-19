@@ -13,7 +13,7 @@ export const Recovery = {
     
     <main class="main-recovery">
         <section>
-            <h2>¿Olvidaste tu contrseña?</h2>
+            <h2>¿Olvidaste tu contraseña?</h2>
             <p>Introduce tu dirección de correo y te enviaremos las instrucciones para reestablecer tu contraseña</p>
 
             <form id="recover-password" role="recover-password" action="">

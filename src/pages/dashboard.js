@@ -12,10 +12,38 @@ import { openModalAndHandle, confirmAndDelete } from '../api/utils/dashboardUtil
 import { chat, userChat, botChat} from '../components/ui/chat.js'
 import { chatbotService } from '../api/services/chatbotService.js'
 
+const CHAT_HISTORY_KEY = 'picm_chat_history'
 
+const loadChatHistory = () => {
+    try {
+        const stored = localStorage.getItem(CHAT_HISTORY_KEY)
+        return stored ? JSON.parse(stored) : []
+    } catch (error) {
+        console.error('No se pudo leer el historial del chat:', error)
+        return []
+    }
+}
 
+const saveChatHistory = (history) => {
+    try {
+        localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(history))
+    } catch (error) {
+        console.error('No se pudo guardar el historial del chat:', error)
+    }
+}
 
+const renderHistoryMessages = (history = [], chatBody) => {
+    history.forEach(({ from, text }) => {
+        chatBody.innerHTML += from === 'user'
+            ? userChat.render({ message: text })
+            : botChat.render({ newBotMessage: text })
+    })
+    chatBody.scrollTop = chatBody.scrollHeight
+}
 
+const resetChatHistory = () => {
+    localStorage.removeItem(CHAT_HISTORY_KEY)
+}
 
 export const Dashboard = {
     render(){
@@ -204,6 +232,7 @@ export const Dashboard = {
             event.preventDefault();
             try {
                 await AuthService.logout();
+                resetChatHistory();
                 Notification.show('Sesión cerrada correctamente', 'success', {
                     duration: 1100
                 });
@@ -228,9 +257,16 @@ export const Dashboard = {
                 return;
             }
 
+            const welcomeMessage = "¡Qué tal!<br>¿Cómo te puedo ayudar hoy?";
+            let history = loadChatHistory();
+            if (history.length === 0) {
+                history = [{ from: 'bot', text: welcomeMessage }];
+                saveChatHistory(history);
+            }
+
             // Crear overlay + chat
             chatContainer.innerHTML = `
-                ${chat.render({ newBotMessage: "¡Qué tal!<br>¿Cómo te puedo ayudar hoy?" })}
+                ${chat.render({newBotMessage: null})}
             `;
 
             // Cerrar al click en overlay
@@ -243,14 +279,16 @@ export const Dashboard = {
             const chatInput = document.getElementById('chat-input');
             const chatBody = document.getElementById('chat-body');
 
-         
-            sendBtn.addEventListener("click", async () => {
+            renderHistoryMessages(history, chatBody);
+
+            const handleSend = async () => {
 
                 const texto = chatInput.value.trim();
                 if (!texto) return;
 
-              
                 chatBody.innerHTML += userChat.render({ message: texto });
+                history.push({ from: 'user', text: texto });
+                saveChatHistory(history);
 
                 chatInput.value = "";
 
@@ -259,14 +297,28 @@ export const Dashboard = {
 
                 try{
                     const response = await chatbotService.talk(texto);
-                    chatBody.innerHTML += botChat.render({ newBotMessage: response.message});
-                }
+                    const botMessage = response.message;
+                    chatBody.innerHTML += botChat.render({ newBotMessage: botMessage});
+                    history.push({ from: 'bot', text: botMessage });
+                    saveChatHistory(history);
+                } 
                 catch(error){
                     Notification.show('Error al enviar el mensaje: ' + error.message, 'error', {
                         duration: 4000
                     });
                 }
                 
+            };
+
+            sendBtn.addEventListener("click", handleSend);
+
+                chatInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    // Prevenir el salto de línea por defecto del textarea
+                    event.preventDefault(); 
+                    // Llamar a la misma función compartida
+                    handleSend();
+                }
             });
         });
 

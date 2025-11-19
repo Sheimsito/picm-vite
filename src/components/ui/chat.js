@@ -2,6 +2,11 @@
 
 export const botChat = {
     render({ newBotMessage = "" } = {}) {
+        let date = new Date().getHours() + ":" + new Date().getMinutes();
+        if (new Date().getMinutes() < 10) {
+            date = new Date().getHours() + ":0" + new Date().getMinutes();
+        }
+        const am_pm = new Date().getHours() >= 12 ? "PM" : "AM";
         return `
         <div class="flex items-start gap-2">
 
@@ -20,6 +25,9 @@ export const botChat = {
                             border-t-transparent border-b-transparent border-r-gray-100"></div>
 
                 ${newBotMessage}
+                <div class="p-2absolute bottom-3 right-3 text-xs">
+                    ${date} ${am_pm}
+                </div>
             </div>
 
         </div>
@@ -29,6 +37,12 @@ export const botChat = {
 
 export const userChat = {
     render({ message = "" } = {}) {
+        let date = new Date().getHours() + ":" + new Date().getMinutes();
+        if (new Date().getMinutes() < 10) {
+            date = new Date().getHours() + ":0" + new Date().getMinutes();
+        }
+        const am_pm = new Date().getHours() >= 12 ? "PM" : "AM";
+
         return `
         <div class="flex items-start gap-2 justify-end">
 
@@ -42,6 +56,9 @@ export const userChat = {
                 </div>
 
                 ${message}
+                <div class="p-2absolute bottom-3 right-3 text-xs">
+                    ${date} ${am_pm}
+                </div>
             </div>
         </div>
         `;
@@ -54,8 +71,8 @@ export const userChat = {
 
 export const chat = {
     render({
-        newUserMessage = "",
-        newBotMessage = ""
+        newUserMessage = "" || null,
+        newBotMessage = "" || null
     }) {
         return `
         <div class="fixed inset-0 bg-black/30" id="chat-overlay"></div>
@@ -69,7 +86,10 @@ export const chat = {
 
             <!-- BODY (AQUÍ SE INYECTAN LOS MENSAJES DEL BOT) -->
             <div id="chat-body" class="flex-1 p-4 overflow-y-auto space-y-3">
-                ${botChat.render({ newBotMessage: newBotMessage })}
+                ${ newBotMessage 
+                    ? botChat.render({ newBotMessage })
+                    : ""
+                }
                 ${ newUserMessage 
                     ? userChat.render({ message: newUserMessage })
                     : "" 

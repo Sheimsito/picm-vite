@@ -26,7 +26,7 @@ body.recovery-page .header-recovery{
 
 body.recovery-page .main-recovery{
     padding-top: 10rem;
-    height: 100vh;
+    height: 90vh;
     width: 100%;
 }
 
@@ -45,6 +45,13 @@ body.recovery-page section{
     margin-top: 5%;
 
 
+    h2{
+        font-weight: 700;
+    }
+
+    p{
+        font-weight: 400;
+    }
     form{
         display: flex;
         flex-direction: column;
@@ -103,4 +110,100 @@ body.recovery-page section{
             margin-top: 0.5rem;
         }
 
+}
+
+@media (min-width: 0px) and (max-width: 600px){
+
+    body.recovery-page .main-recovery{
+        width: 100%;
+        padding-top: 10rem;
+    }
+    body.recovery-page section{
+        width:90%;
+        align-items: center;
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+
+        form{
+            padding: 0;
+        }
+
+        .input-group{
+            padding: 0;
+        }
+
+        input{
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 0.3rem;
+            font-size: 1rem;
+            width: 15rem;
+        }
+
+        button{
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 0.3rem;
+            font-size: 1rem;
+        }
+
+        
+    }
+    body.recovery-page section .input-group{
+        width:100%;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px){
+
+    body.recovery-page .main-recovery{
+        max-height: 70vh;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+    }
+    body.recovery-page section{
+        width: 80%;
+        
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        form{
+            padding: 0;
+
+            .input-group{
+                padding: 0;
+
+                label{
+                    font-weight: 400;
+                    font-size: 1.3rem;
+                }
+
+                input{
+                    font-size: 1.2rem;
+                }
+            }
+
+            button{
+                font-size: 1.4rem;
+            }
+
+            #login-link a{
+                font-size: 1rem;
+            }
+        }
+    }
 }
