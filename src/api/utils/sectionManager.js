@@ -66,7 +66,7 @@ export class SectionManager {
 
         if (this.config.sectionKey === 'movimientos') {
             return {
-                data: this.addActionButtons(data, 'PDF'),
+                data: this.addActionButtons(data, ''),
                 totalItems: response.count || data.length,
                 currentPage: page
             };
@@ -125,10 +125,15 @@ export class SectionManager {
      */
     renderError(error) {
         document.getElementById('dashboard-content').innerHTML = `
-            <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                <h3 class="text-red-800 font-semibold mb-2">Error al cargar ${this.config.name}</h3>
-                <p class="text-red-600">${error.message}</p>
-                <button onclick="showSection('${this.config.sectionKey}')" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+            <div class="section-card" style="text-align:center;padding:40px 24px;max-width:480px;margin:0 auto;">
+                <div class="stat-card-icon red" style="width:48px;height:48px;border-radius:12px;margin:0 auto 16px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 style="font-size:15px;font-weight:700;color:#1a2035;margin-bottom:6px;">Error al cargar ${this.config.name}</h3>
+                <p style="font-size:13px;color:#8a94a6;margin-bottom:18px;">${error.message}</p>
+                <button onclick="showSection('${this.config.sectionKey}')" class="btn-primary" style="margin:0 auto;">
                     Reintentar
                 </button>
             </div>
@@ -378,9 +383,9 @@ export const SectionFactory = {
             },
             
             actionButtons: (producto) => `
-                <div class="flex space-x-2">
-                    <button onclick="editProduct(${producto.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
-                    <button onclick="deleteProduct(${producto.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="editProduct(${producto.id})" class="tbl-btn tbl-btn-edit">Editar</button>
+                    <button onclick="deleteProduct(${producto.id})" class="tbl-btn tbl-btn-delete">Eliminar</button>
                 </div>
             `,
             
@@ -416,22 +421,45 @@ export const SectionFactory = {
                 const safeValue = Number(stats.totalValue) || 0;
                 
                 return `
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-6xl mt-[2rem] mb-[1rem]">
-                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Productos</h3>
-                            <p class="text-3xl font-bold text-primary">${stats.totalProducts}</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-icon blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12l8-4.5M12 12v9M12 12l-8-4.5"/>
+                                </svg>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-card-value">${stats.totalProducts ?? '—'}</span>
+                                <span class="stat-card-label">Total Productos</span>
+                            </div>
                         </div>
-                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Valor Total del Inventario</h3>
-                            <p class="text-3xl font-bold text-success">${colombianFormat.format(safeValue)}</p>
+                        <div class="stat-card">
+                            <div class="stat-card-icon green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-card-value" style="font-size:16px;">${colombianFormat.format(safeValue)}</span>
+                                <span class="stat-card-label">Valor del Inventario</span>
+                            </div>
                         </div>
                     </div>
                 `;
             },
             
             actionsRenderer: () => `
-                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
-                    <button id="agregar-producto" onclick="openAddProductModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Producto</button>
+                <div class="section-card">
+                    <div class="action-bar">
+                        <div class="action-bar-left"></div>
+                        <button id="agregar-producto" onclick="openAddProductModal()" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Agregar Producto
+                        </button>
+                    </div>
                 </div>
             `
         };
@@ -456,9 +484,9 @@ export const SectionFactory = {
             },
             
             actionButtons: (category) => `
-                <div class="flex space-x-2">
-                    <button onclick="editCategory(${category.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
-                    <button onclick="deleteCategory(${category.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="editCategory(${category.id})" class="tbl-btn tbl-btn-edit">Editar</button>
+                    <button onclick="deleteCategory(${category.id})" class="tbl-btn tbl-btn-delete">Eliminar</button>
                 </div>
             `,
             
@@ -488,8 +516,16 @@ export const SectionFactory = {
             },
             
             actionsRenderer: () => `
-                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
-                    <button id="agregar-categoria" onclick="openAddCategoryModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Categoría</button>
+                <div class="section-card">
+                    <div class="action-bar">
+                        <div class="action-bar-left"></div>
+                        <button id="agregar-categoria" onclick="openAddCategoryModal()" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Agregar Categoría
+                        </button>
+                    </div>
                 </div>
             `
         };
@@ -512,9 +548,9 @@ export const SectionFactory = {
                 return { totalSupplies, totalValue };
             },
             actionButtons: (supply) => `
-                <div class="flex space-x-2">
-                    <button onclick="editSupply(${supply.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
-                    <button onclick="deleteSupply(${supply.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="editSupply(${supply.id})" class="tbl-btn tbl-btn-edit">Editar</button>
+                    <button onclick="deleteSupply(${supply.id})" class="tbl-btn tbl-btn-delete">Eliminar</button>
                 </div>
             `,
             tableRenderer: (data) => {
@@ -548,21 +584,43 @@ export const SectionFactory = {
                 const safeValue = Number(stats.totalValue) || 0;
                 
                 return `
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-6xl mt-[2rem] mb-[1rem]">
-                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Insumos</h3>
-                            <p class="text-3xl font-bold text-primary">${stats.totalSupplies}</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-icon blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 21v-16a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M3 21h18"/>
+                                </svg>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-card-value">${stats.totalSupplies ?? '—'}</span>
+                                <span class="stat-card-label">Total Insumos</span>
+                            </div>
                         </div>
-                        <div class="flex flex-col justify-center items-center bg-white p-2! rounded-lg shadow-md h-25">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Valor Total del Inventario</h3>
-                            <p class="text-3xl font-bold text-success">${colombianFormat.format(safeValue)}</p>
+                        <div class="stat-card">
+                            <div class="stat-card-icon green">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-card-body">
+                                <span class="stat-card-value" style="font-size:16px;">${colombianFormat.format(safeValue)}</span>
+                                <span class="stat-card-label">Valor del Inventario</span>
+                            </div>
                         </div>
                     </div>
                 `;
             },
             actionsRenderer: () => `
-                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
-                    <button id="agregar-insumo" onclick="openAddSupplyModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Insumo</button>
+                <div class="section-card">
+                    <div class="action-bar">
+                        <div class="action-bar-left"></div>
+                        <button id="agregar-insumo" onclick="openAddSupplyModal()" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Agregar Insumo
+                        </button>
+                    </div>
                 </div>
             `
         };
@@ -582,9 +640,9 @@ export const SectionFactory = {
                 return { totalSuppliers: suppliers.length };
             },
             actionButtons: (supplier) => `
-                <div class="flex space-x-2">
-                    <button onclick="editSupplier(${supplier.id})" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
-                    <button onclick="deleteSupplier(${supplier.id})" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="editSupplier(${supplier.id})" class="tbl-btn tbl-btn-edit">Editar</button>
+                    <button onclick="deleteSupplier(${supplier.id})" class="tbl-btn tbl-btn-delete">Eliminar</button>
                 </div>
             `,
             tableRenderer: (data) => {
@@ -614,8 +672,16 @@ export const SectionFactory = {
                 });
             },
             actionsRenderer: () => `
-                <div class="w-6xl mt-[1rem] mb-[1rem] flex justify-end w-full items-center">                  
-                    <button id="agregar-proveedor" onclick="openAddSupplierModal()" class="h-10 w-[20rem] bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] border border-[var(--color-success)] text-white px-3 py-1 rounded text-sm">Agregar Proveedor</button>
+                <div class="section-card">
+                    <div class="action-bar">
+                        <div class="action-bar-left"></div>
+                        <button id="agregar-proveedor" onclick="openAddSupplierModal()" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Agregar Proveedor
+                        </button>
+                    </div>
                 </div>
             `
         }
@@ -632,14 +698,14 @@ export const SectionFactory = {
                 return MovementService.getMovements(page, pageSize, search, filter, movementType, fechaDesde, fechaHasta,tipoMovimiento)
             },
             actionButtons: (movement) => `
-                <div class="flex space-x-2">
-                    <button onclick="editMovement(${movement.id},'${tipoMovimiento}')" class="bg-blue-500 hover:bg-blue-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Editar</button>
-                    <button onclick="deleteMovement(${movement.id},'${tipoMovimiento}')" class="bg-red-500 hover:bg-red-700 text-white h-7 w-[5rem] text-xs py-1 px-2 rounded">Eliminar</button>
+                <div style="display:flex;gap:6px;">
+                    <button onclick="editMovement(${movement.id},'${tipoMovimiento}')" class="tbl-btn tbl-btn-edit">Editar</button>
+                    <button onclick="deleteMovement(${movement.id},'${tipoMovimiento}')" class="tbl-btn tbl-btn-delete">Eliminar</button>
                 </div>
             `,
             tableRenderer: (data) => {
                 return Table.render({
-                    headers: ['ID', tipoMovimiento , 'Usuario relacionado', 'Tipo de modificación', 'Stock modificado','Comentario' ,'Fecha de creación', 'Fecha de modificación','PDF','Acciones'],
+                    headers: ['ID', tipoMovimiento , 'Usuario relacionado', 'Tipo de modificación', 'Stock modificado','Comentario' ,'Fecha de creación', 'Fecha de modificación','Acciones'],
                     body: data.data,
                     dataFields: data.data.length > 0 ? Object.keys(data.data[0]) : [],
                     striped: true,
@@ -664,136 +730,79 @@ export const SectionFactory = {
                 });
             },
             actionsRenderer: () => `
-                        <!-- ============ COLLAPSE DE FILTROS DE BÚSQUEDA ============ -->
-                        
-                            <div class="w-[81%] bg-white border border-gray-200 rounded-none shadow-sm ">
-                                <div class="border-b border-gray-200 px-5 py-3">
-                                    <h2 class="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                                        <!-- Heroicon outline funnel -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-6.414 6.414V20l-4-2v-5.879L3.293 6.707A1 1 0 013 6V4z"/>
-                                        </svg>
-                                        Filtros de búsqueda
-                                        <!-- Badge -->
-                                        <span class="ml-2 bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded">
-                                            Filtros activos
-                                        </span>
-                                    </h2>
+                <!-- Filter card -->
+                <div class="section-card">
+                    <div class="section-card-header">
+                        <h2 class="section-card-title" style="display:flex;align-items:center;gap:8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-6.414 6.414V20l-4-2v-5.879L3.293 6.707A1 1 0 013 6V4z"/>
+                            </svg>
+                            Filtros de búsqueda
+                        </h2>
+                    </div>
+                    <div class="section-card-body">
+                        <form method="GET" id="filtrosForm" style="display:flex;flex-direction:column;gap:16px;">
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <label for="busqueda" style="font-size:12px;font-weight:600;color:#4a5568;">Búsqueda general</label>
+                                    <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por producto..." class="filter-input" style="width:100%;min-width:unset;">
                                 </div>
-
-                                <!-- collapse con details -->
-                                <details class="p-5" open>
-                                    <summary class="cursor-pointer text-gray-700 font-medium hover:text-blue-600 mb-4">
-                                        Mostrar / Ocultar filtros
-                                    </summary>
-
-                                    <form method="GET" id="filtrosForm" class="space-y-5">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                                            <!-- Búsqueda general -->
-                                            <div>
-                                                <label for="busqueda" class="block text-sm font-medium text-gray-700 mb-1">Búsqueda general</label>
-                                                <input type="text" id="busqueda" name="busqueda"
-                                                    placeholder="Busca aquí por producto."
-                                                    class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-800 text-sm">
-                                            </div>
-                       
-
-                                            <!-- Tipo de movimiento -->
-                                            <div>
-                                                <label for="tipo_movimiento" class="block text-sm font-medium text-gray-700 mb-1">Tipo de movimiento</label>
-                                                <select id="tipo_movimiento" name="tipo_movimiento"
-                                                        class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-800 text-sm">
-                                                    <option value="">Todos los tipos</option>
-                                                    <option>Entrada</option>
-                                                    <option>Salida</option>
-                                                </select>
-                                            </div>
-
-                                            <!-- Fecha desde -->
-                                            <div>
-                                                <label for="fecha_desde" class="block text-sm font-medium text-gray-700 mb-1">Fecha desde</label>
-                                                <input type="date" id="fecha_desde" name="fecha_desde"
-                                                    class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-800 text-sm">
-                                            </div>
-
-                                            <!-- Fecha hasta -->
-                                            <div>
-                                                <label for="fecha_hasta" class="block text-sm font-medium text-gray-700 mb-1">Fecha hasta</label>
-                                                <input type="date" id="fecha_hasta" name="fecha_hasta"
-                                                    class="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-800 text-sm">
-                                            </div>
-                                        </div>
-
-                                        <!-- Botones -->
-                                        <div class=" flex flex-wrap items-center gap-3">
-                                            <button type="submit"
-                                                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition">
-                                                <!-- Heroicon outline magnifying-glass -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                                </svg>
-                                                Aplicar filtros
-                                            </button>
-
-                                            <button type= "button" id="clear-movements-filters"
-                                            class="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm transition">
-                                                <!-- Heroicon outline x-mark -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                                                </svg>
-                                                Limpiar filtros
-                                            </button>
-
-                                            <span class="text-gray-500 text-sm flex items-center gap-1">
-                                                <!-- Heroicon outline information-circle -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M11.25 9.75h1.5m-1.5 3h1.5m-1.5 3h1.5M12 2.25c5.385 0 9.75 4.365 9.75 9.75S17.385 21.75 12 21.75 2.25 17.385 2.25 12 6.615 2.25 12 2.25z"/>
-                                                </svg>
-                                                Mostrando resultados filtrados
-                                            </span>
-                                        </div>
-                                    </form>
-                                </details>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <label for="tipo_movimiento" style="font-size:12px;font-weight:600;color:#4a5568;">Tipo de movimiento</label>
+                                    <select id="tipo_movimiento" name="tipo_movimiento" class="filter-select" style="width:100%;min-width:unset;">
+                                        <option value="">Todos los tipos</option>
+                                        <option>Entrada</option>
+                                        <option>Salida</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <label for="fecha_desde" style="font-size:12px;font-weight:600;color:#4a5568;">Fecha desde</label>
+                                    <input type="date" id="fecha_desde" name="fecha_desde" class="filter-input" style="width:100%;min-width:unset;">
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:5px;">
+                                    <label for="fecha_hasta" style="font-size:12px;font-weight:600;color:#4a5568;">Fecha hasta</label>
+                                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="filter-input" style="width:100%;min-width:unset;">
+                                </div>
                             </div>
-                        </div>
-                    
-                    <div class="max-w-7xl mx-auto px-4 py-6">
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                                <button type="submit" class="btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                    Aplicar filtros
+                                </button>
+                                <button type="button" id="clear-movements-filters" class="btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                    Limpiar filtros
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-                        <!-- ============ BOTONES ACCIÓN SUPERIOR ============ -->
-                        <div class="flex flex-col sm:flex-row justify-end gap-3 mb-8">
-
-                           <!-- Movimientos inactivos -->
-                            <button
-                                onclick="openInactiveMovementsModal()"
-                                class="flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-md shadow-sm transition">
-                                <!-- Heroicon Outline ArrowPath (casi recycle) -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M4 4v5h5M20 20v-5h-5M5 19a9 9 0 0114-7.5M19 5a9 9 0 00-14 7.5"/>
+                <!-- Action buttons -->
+                <div class="section-card">
+                    <div class="action-bar">
+                        <div class="action-bar-left"></div>
+                          <button onclick="openGenerateReportModal('${tipoMovimiento}')" class="btn-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5 19a9 9 0 0114-7.5M19 5a9 9 0 00-14 7.5"/>
                                 </svg>
-                                Movimientos inactivos
+                                Generar reporte
                             </button>
-                            
-                            <!-- Nuevo movimiento -->
-                            <button
-                                onclick="openAddMovementModal('${tipoMovimiento}')"
-                                class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md shadow-sm transition">
-                                <!-- Heroicon Outline Plus -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Nuevo movimiento
-                            </button>                
-                        </div>
+                        <button onclick="openAddMovementModal('${tipoMovimiento}')" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Nuevo movimiento
+                        </button>
+                    </div>
+                </div>
             `
         }
     }
 }
+
+  

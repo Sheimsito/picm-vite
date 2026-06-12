@@ -48,158 +48,172 @@ const resetChatHistory = () => {
 export const Dashboard = {
     render(){
         return `
-    <div class="flex flex-col lg:flex-row h-screen bg-white">
-    <header class="flex flex-col w-full lg:w-1/6 xl:w-1/6 border-r border-gray-200 shadow-sm bg-white h-fit  lg:h-screen">
-        <div class="flex justify-center items-center p-4 border-b border-gray-200">
-            <div class="bg-[var(--color-primary)] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-1 w-4/5 min-h-[50px] ">
-                <div class="font-bold text-sm lg:text-base leading-tight tracking-wide text-white whitespace-nowrap">StayAwayCo</div>
-                <div class="font-semibold text-xs tracking-wider text-white">PICM</div>
-            </div>
-        </div>
-        <nav class="flex flex-col pl-2 h-[65vh]">
-            <ul class="pt-8 list-none flex flex-col gap-2">
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="dashboard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-layout-dashboard">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
-                            <path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
-                            <path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
-                            <path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Dashboard</span>
-                    </button>
-                </li>
+    <div class="dashboard-shell">
 
-                 <!-- Navegación de items relacionados al módulo de productos -->
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="productos">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-store">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" />
-                            <path d="M5 21v-12l5 4v-4l5 4h4" />
-                            <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
-                            <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Productos</span>
-                    </button>
-                </li>
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="categorias">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-category">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M4 4h6v6h-6z" /><path d="M14 4h6v6h-6z" />
-                            <path d="M4 14h6v6h-6z" />
-                            <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Categorías</span>
-                    </button>
-                </li>
+        <!-- ===== MOBILE OVERLAY ===== -->
+        <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
 
-                <!-- Navegación de items relacionados al módulo de materias primas / insumos -->
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="insumos">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-factory-2">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21h18" />
-                            <path d="M5 21v-12l5 4v-4l5 4h4" />
-                            <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
-                            <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Insumos</span>
-                    </button>
-                </li>
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="proveedores">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-check">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
-                            <path d="M15 19l2 2l4 -4" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Proveedores</span>
-                    </button>
-                </li>
-                <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="movimientos">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card-pay">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 19h-6a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M3 10h18" />
-                            <path d="M16 19h6" />
-                            <path d="M19 16l3 3l-3 3" />
-                            <path d="M7.005 15h.005" />
-                            <path d="M11 15h2" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Movimientos</span>
-                    </button>
-                </li>
-                
-               <!-- <li class="flex flex-row items-center cursor-pointer w-[90%]">
-                    <button class="dashboard-nav-button flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-primary-hover)] hover:border-[var(--color-primary-hover)] hover:text-white transition-all duration-300" data-section="documentos">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-analytics">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                            <path d="M9 17l0 -5" />
-                            <path d="M12 17l0 -1" />
-                            <path d="M15 17l0 -3" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Documentos</span>
-                    </button>
-                </li> -->
-                
-            </ul>
-        </nav>
+        <!-- ===== SIDEBAR ===== -->
+        <aside id="sidebar" class="sidebar" aria-label="Navegación principal">
 
-
-        <!-- Footer del Sidebar -->
-        <footer class="mt-auto p-4 pt-4 pb-4 pl-4 border-t border-gray-200">
-            <ul class="w-full list-none">
-                <li class="flex flex-row items-center cursor-pointer w-[90%] mb-2">
-                    <button id="help" class="flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-text-secondary)] hover:border-[var(--color-text-secondary)] hover:text-white transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-help">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                            <path d="M12 17l0 .01" />
-                            <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
-                        </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Ayuda</span>
-                    </button>
-                </li>
-
-
-                <li class="flex flex-row items-center cursor-pointer w-[90%] mb-2">
-                    <button id="settings" class="flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-text-secondary)] hover:border-[var(--color-text-secondary)] hover:text-white transition-all duration-300">
-                       <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20 " fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
                     </svg>
+                </div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-name">StayAwayCo</span>
+                    <span class="sidebar-brand-sub">PICM · Inventarios</span>
+                </div>
+            </div>
 
-                        <span id="nav-button-username" class="pl-3 text-xs lg:text-sm">Usuario</span>
-                    </button>
-                </li>
-                <li class="flex flex-row items-center cursor-pointer w-[90%] mb-2">
-                    <button id="logout" class="flex items-center bg-white text-left pl-4 w-full h-12 border border-white rounded-lg text-black font-medium text-sm lg:text-base hover:bg-[var(--color-error)] hover:border-[var(--color-error)] hover:text-white transition-all duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+            <!-- Main navigation -->
+            <nav class="sidebar-nav" aria-label="Menú principal">
+                <span class="sidebar-group-label">General</span>
+                <ul class="sidebar-nav-list">
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="dashboard" aria-current="page">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/>
+                                <path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/>
+                                <path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/>
+                                <path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/>
+                            </svg>
+                            <span>Dashboard</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <span class="sidebar-group-label">Inventario</span>
+                <ul class="sidebar-nav-list">
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="productos">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M12 3l8 4.5v9l-8 4.5l-8 -4.5v-9z"/>
+                                <path d="M12 12l8 -4.5"/>
+                                <path d="M12 12v9"/>
+                                <path d="M12 12l-8 -4.5"/>
+                            </svg>
+                            <span>Productos</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="categorias">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 4h6v6h-6z"/><path d="M14 4h6v6h-6z"/>
+                                <path d="M4 14h6v6h-6z"/>
+                                <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>
+                            </svg>
+                            <span>Categorías</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="insumos">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M3 21h18"/>
+                                <path d="M9 8h1"/>
+                                <path d="M9 12h1"/>
+                                <path d="M9 16h1"/>
+                                <path d="M14 8h1"/>
+                                <path d="M14 12h1"/>
+                                <path d="M14 16h1"/>
+                                <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"/>
+                            </svg>
+                            <span>Insumos</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="proveedores">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+                                <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
+                                <path d="M15 19l2 2l4 -4"/>
+                            </svg>
+                            <span>Proveedores</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dashboard-nav-button sidebar-nav-btn" data-section="movimientos">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M3 12h18"/>
+                                <path d="M3 6h18"/>
+                                <path d="M3 18h18"/>
+                                <path d="M17 16l4 -4l-4 -4"/>
+                            </svg>
+                            <span>Movimientos</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Sidebar footer -->
+            <div class="sidebar-footer">
+                <button id="help" class="sidebar-footer-btn" title="Asistente IA">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
+                        <path d="M12 17l0 .01"/>
+                        <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4"/>
+                    </svg>
+                    <span>Asistente</span>
+                </button>
+
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                            <path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" />
+                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
                         </svg>
-                        <span class="pl-3 text-xs lg:text-sm">Cerrar sesión</span>
+                    </div>
+                    <button id="settings" class="sidebar-user-info" title="Perfil de usuario">
+                        <span id="nav-button-username" class="sidebar-username">Usuario</span>
+                        <span class="sidebar-user-role">Administrador</span>
                     </button>
-                </li>
-            </ul>
-        </footer>
-    </header>
+                    <button id="logout" class="sidebar-logout-btn" title="Cerrar sesión" aria-label="Cerrar sesión">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
+                            <path d="M9 12h12l-3 -3"/><path d="M18 15l3 -3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
 
-    <main class="flex-1 lg:w-5/6 xl:w-4/5 bg-gray-50">
-        <header class="w-full px-4 lg:px-20 py-6 border-r-0 pb-4 shadow-none">
-            <h1 class="text-2xl lg:text-4xl font-bold" id="main-title">Dashboard</h1>
-        </header>
-        
-        <!-- Contenido dinámico -->
-        <div id="dashboard-content" class="p-4 lg:p-6 flex flex-col gap-4 justify-center items-center ">
-            <!-- El contenido se cargará aquí dinámicamente -->
+        <!-- ===== MAIN AREA ===== -->
+        <div class="main-area">
+
+            <!-- Top bar (mobile hamburger + page title) -->
+            <header class="topbar">
+                <button id="sidebar-toggle" class="topbar-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <h1 class="topbar-title" id="main-title">Dashboard</h1>
+            </header>
+
+            <!-- Dynamic content -->
+            <main id="dashboard-content" class="dashboard-content">
+                <!-- Contenido dinámico -->
+            </main>
+
+            <!-- Chat modal -->
+            <div id="chat-modal"></div>
         </div>
-
-    <!-- Aquí se insertará el chat -->  
-        <div id="chat-modal"> </div>
-    </main>
     </div>
         `;
     },
@@ -225,6 +239,29 @@ export const Dashboard = {
         }
 
         User()
+
+        // Mobile sidebar toggle
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        const closeSidebar = () => {
+            sidebar.classList.remove('sidebar-open');
+            sidebarOverlay.classList.remove('active');
+            sidebarToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                const isOpen = sidebar.classList.toggle('sidebar-open');
+                sidebarOverlay.classList.toggle('active', isOpen);
+                sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+            });
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
 
         // Logout functionality
         const logout = document.getElementById('logout');
@@ -401,20 +438,32 @@ export const Dashboard = {
                     
                 case 'movimientos':
                     dashboardContent.innerHTML = `
-                            <div class="bg-white p-10 rounded-lg shadow-md text-center mt-[10rem]">
-                            <div class="mb-6">
-                                <svg class="mx-auto text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8h6m-6 4h6m-6 4h6M6 3v18l2-2 2 2 2-2 2 2 2-2 2 2V3l-2 2-2-2-2 2-2-2-2 2-2-2Z"/>
-                                </svg>
+                                      <div style="display:flex;align-items:center;justify-content:center;flex:1;padding:40px 16px;">
+                            <div class="section-card" style="width:100%;max-width:420px;text-align:center;">
+                                <div class="section-card-body" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+                                    <div class="stat-card-icon blue" style="width:56px;height:56px;border-radius:14px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 6h18M3 18h18M17 16l4-4-4-4"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2 style="font-size:17px;font-weight:700;color:#1a2035;margin:0 0 6px;">Consultar Movimientos</h2>
+                                        <p style="font-size:13px;color:#8a94a6;margin:0;">Elige el módulo que deseas revisar</p>
+                                    </div>
+                                    <select class="filter-select" id="movimiento" name="movimiento" style="width:100%;min-width:unset;">
+                                        <option value="" selected disabled>Selecciona el tipo de movimiento</option>
+                                        <option value="productos">Productos</option>
+                                        <option value="insumos">Insumos</option>
+                                    </select>
+                                    <button id="movimientos-button" class="btn-primary" style="width:100%;justify-content:center;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                        Consultar
+                                    </button>
+                                </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Elige qué movimientos deseas consultar</h2>
-                            <select class="w-full p-2 border border-gray-300 rounded" id="movimiento" name="movimiento" >
-                                <option value="" selected disabled>Selecciona el tipo de movimiento</option>
-                                <option value="productos">Productos</option>
-                                <option value="insumos">Insumos</option>
-                            </select>
-                            <button id="movimientos-button" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mt-4">Consultar</button>
-                            
+                        </div>
                     `;
 
                     document.getElementById('movimientos-button').addEventListener('click', () => {
@@ -960,37 +1009,30 @@ export const Dashboard = {
                 ]);
 
                 const dashboardContent = document.getElementById('dashboard-content');
-                dashboardContent.innerHTML = `
-                    <div class="w-full max-w-7xl mx-auto">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                         <!-- Top Productos con más Entradas -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="h-80">
-                                    <canvas id="topEntriesChart"></canvas>
-                                </div>
+               dashboardContent.innerHTML = `
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:20px;width:100%;">
+                        <div class="chart-card">
+                            <div class="chart-card-header text-center">Top 5 Productos con más Entradas</div>
+                            <div class="chart-card-body" style="height:280px;position:relative;">
+                                <canvas id="topEntriesChart"></canvas>
                             </div>
-
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="h-80">
-                                    <canvas id="topSalesChart"></canvas>
-                                </div>
-                            </div>
-
                         </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                            <!-- Volumen de Movimientos Mensuales -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="h-80">
-                                    <canvas id="monthlyMovementsChart"></canvas>
-                                </div>
+                        <div class="chart-card">
+                            <div class="chart-card-header text-center">Top 5 Productos con más Salidas</div>
+                            <div class="chart-card-body" style="height:280px;position:relative;">
+                                <canvas id="topSalesChart"></canvas>
                             </div>
-
-                            <!-- Volumen de Entradas vs Salidas -->
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <div class="h-80">
-                                    <canvas id="volumeChart"></canvas>
-                                </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-card-header text-center">Tendencia de Movimientos por Mes</div>
+                            <div class="chart-card-body" style="height:280px;position:relative;">
+                                <canvas id="monthlyMovementsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-card-header text-center">Volumen Entradas vs Salidas Mensuales</div>
+                            <div class="chart-card-body" style="height:280px;position:relative;">
+                                <canvas id="volumeChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -1104,6 +1146,80 @@ export const Dashboard = {
             if(tipo === 'insumos'){
                 ReportService.downloadSupplyReportById(id).then(response => {
                     ReportService.openPDF(response);
+                });
+            }
+        };
+
+        window.openGenerateReportModal = async (tipoMovimiento) => {
+            try {
+                // Obtener todos los productos o insumos según la sección
+                let items = [];
+                let tipoLabel = '';
+                
+                if (tipoMovimiento === 'productos') {
+                    // Obtener todos los productos con un tamaño de página grande
+                    const response = await ProductService.getProducts(1, 1000, '', '', '');
+                    items = response.results || response.data || response;
+                    tipoLabel = 'Producto';
+                } else {
+                    // Obtener todos los insumos con un tamaño de página grande
+                    const response = await SupplyService.getSupplies(1, 1000, '', '', '');
+                    items = response.results || response.data || response;
+                    tipoLabel = 'Insumo';
+                }
+
+                // Formatear las opciones como objetos {id, name}
+                const options = items.map(item => ({
+                    id: item.id,
+                    name: item.name || item.product_name || item.supply_name || `ID: ${item.id}`
+                }));
+
+                if (options.length === 0) {
+                    Notification.show(`No hay ${tipoLabel.toLowerCase()}s disponibles para generar reporte`, 'warning', {
+                        duration: 3000
+                    });
+                    return;
+                }
+
+                openModalAndHandle({
+                    title: 'Generar Reporte',
+                    inputs: [
+                        { 
+                            title: tipoLabel, 
+                            type: 'select', 
+                            placeholder: `Seleccione un ${tipoLabel.toLowerCase()}`, 
+                            name: 'itemSelect', 
+                            id: 'itemSelect', 
+                            options: options,
+                            required: true
+                        }
+                    ],
+                    submitText: 'Generar',
+                    closeText: 'Cancelar',
+                    size: 'lg',
+                    buildPayload: () => ({
+                        id: document.getElementById('itemSelect').value,
+                        tipo: tipoMovimiento
+                    }),
+                    apiCall: async (payload) => {
+                        // Generar el reporte usando ReportService directamente
+                        if (payload.tipo === 'productos') {
+                            const response = await ReportService.downloadProductReportById(payload.id);
+                            ReportService.openPDF(response);
+                        } else if (payload.tipo === 'insumos') {
+                            const response = await ReportService.downloadSupplyReportById(payload.id);
+                            ReportService.openPDF(response);
+                        }
+                        return { success: true };
+                    },
+                    successMessage: 'Reporte generado correctamente',
+                    onSuccess: () => {
+                        // No necesitamos hacer nada adicional, el PDF ya se descargó
+                    }
+                });
+            } catch (error) {
+                Notification.show('Error al cargar los elementos: ' + error.message, 'error', {
+                    duration: 4000
                 });
             }
         };

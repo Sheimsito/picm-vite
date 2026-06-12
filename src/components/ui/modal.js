@@ -49,15 +49,21 @@ export const Modal = {
                         ${input.required ? 'required' : ''}
                         ${input.disabled ? 'disabled' : ''}
                     >
-                        ${(input.options || []).map(option => `
+                        ${(input.options || []).map(option => {
+                            // Support both string options and object options {id, name} or {value, label}
+                            const optionValue = typeof option === 'object' ? (option.id || option.value) : option;
+                            const optionText = typeof option === 'object' ? (option.name || option.label || optionValue) : option;
+                            const isSelected = input.value === optionValue || (typeof option === 'object' && input.value === option.id);
+                            return `
                             <option 
                                 class="text-gray-600 text-sm font-normal bg-white" 
-                                value="${option}" 
-                                ${input.value === option ? 'selected' : ''}
+                                value="${optionValue}" 
+                                ${isSelected ? 'selected' : ''}
                             >
-                                ${option}
+                                ${optionText}
                             </option>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </select>
                 ` : `
                     <input 
