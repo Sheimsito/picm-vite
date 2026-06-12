@@ -1,6 +1,6 @@
 # 🏭 PICM-VITE - Sistema de Gestión de Inventario
 
-Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaScript Vanilla** y **Tailwind CSS**. Diseñado para gestionar productos, categorías, insumos, proveedores y movimientos de inventario de manera eficiente, realizado como proyecto académico para la asignatura Desarrollo de Software.
+Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaScript Vanilla** y **Tailwind CSS**, con backend en **Django REST Framework**. Diseñado para gestionar productos, categorías, insumos, proveedores y movimientos de inventario de manera eficiente, con UI responsive, auditoría de acciones y un chatbot de soporte impulsado por **Google Gemini**. Proyecto académico para la asignatura Desarrollo de Software.
 
 ## 📋 Tabla de Contenidos
 
@@ -16,8 +16,10 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 
 ## ✨ Características
 
-- 🎨 **Interfaz Moderna**: Diseño limpio y profesional con Tailwind CSS
-- 📱 **Responsive Design**: Adaptable a diferentes tamaños de pantalla (En desarrollo)
+- 🎨 **Interfaz Moderna**: UI renovada con diseño limpio, variables CSS unificadas, sidebar rediseñado y páginas de autenticación con layout de dos paneles
+- 📱 **Responsive Design**: Adaptable a desktop, tablet y móvil con menú hamburguesa, sidebar colapsable y layouts fluidos
+- 🤖 **Asistente Virtual**: Chatbot de soporte integrado con Google Gemini para ayuda contextual sobre la aplicación
+- 📋 **Auditoría (Backend)**: Registro de acciones del sistema implementado con Django para trazabilidad de operaciones
 - 🔐 **Autenticación Completa**: Login, logout, recuperación de contraseña
 - 📊 **Dashboard Interactivo**: Panel de control con métricas y estadísticas
 - 🛍️ **Gestión de Productos**: CRUD completo para productos con paginación
@@ -41,6 +43,11 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - **Tailwind CSS** - Framework de CSS utilitario
 - **CSS Modules** - Estilos organizados por componentes
 - **Chart.js** - Librería para gráficos interactivos
+
+### Backend
+- **Django** - API REST y lógica de negocio
+- **Django Audit** - Sistema de auditoría para registro de acciones
+- **Google Gemini** - Modelo de IA para el chatbot de soporte
 
 ### Arquitectura
 - **SPA (Single Page Application)** - Navegación sin recarga de página
@@ -122,6 +129,12 @@ Un sistema moderno de gestión de inventario desarrollado con **Vite**, **JavaSc
 - 🎯 **Integración Directa**: Botones de descarga integrados en las tablas
 - 💾 **Descarga Automática**: Generación y descarga instantánea de archivos
 
+### Asistente Virtual
+1. Haz clic en **Asistente** en el footer del sidebar
+2. Escribe tu consulta sobre el uso de la aplicación
+3. El bot responde en tiempo real usando Google Gemini
+4. El historial de conversación se conserva en la sesión del navegador
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -140,7 +153,8 @@ picm-vite/
 │   │   │   ├── supplyService.js # Servicios de insumos y proveedores
 │   │   │   ├── movementService.js # Servicios de movimientos
 │   │   │   ├── statisticService.js # Servicios de estadísticas
-│   │   │   └── reportService.js # Servicios de reportes PDF
+│   │   │   ├── reportService.js # Servicios de reportes PDF
+│   │   │   └── chatbotService.js # Servicios del chatbot de soporte
 │   │   └── utils/
 │   │       ├── apiClient.js     # Cliente HTTP
 │   │       ├── dashboardUtils.js # Utilidades del dashboard
@@ -150,7 +164,8 @@ picm-vite/
 │   │       ├── modal.js         # Componente modal
 │   │       ├── Notification.js  # Sistema de notificaciones
 │   │       ├── table.js         # Tabla de datos
-│   │       └── charts.js        # Componentes de gráficos
+│   │       ├── charts.js        # Componentes de gráficos
+│   │       └── chat.js          # Componente del chatbot de soporte
 │   ├── css/
 │   │   ├── components.css       # Estilos de componentes
 │   │   ├── dashboard.css        # Estilos del dashboard
@@ -231,6 +246,9 @@ picm-vite/
 - `GET /reports/download-product-report/{id}` - Descargar reporte PDF de producto
 - `GET /reports/download-supply-report/{id}` - Descargar reporte PDF de insumo
 
+### Chatbot
+- `POST /chatbot/chat` - Enviar mensaje al asistente virtual (Google Gemini)
+
 ## ✅ Funcionalidades Implementadas
 
 ### 🔐 Autenticación
@@ -241,13 +259,14 @@ picm-vite/
 - [x] Protección de rutas
 
 ### 📊 Dashboard
-- [x] Navegación lateral responsive
+- [x] Navegación lateral responsive con menú hamburguesa
 - [x] Métricas principales (Total productos, Valor inventario)
 - [x] Secciones organizadas por módulos
 - [x] Diseño moderno y profesional
 - [x] Sistema de gestión de secciones dinámico
 - [x] Gráficos interactivos con Chart.js
 - [x] Estadísticas de rendimiento en tiempo real
+- [x] Topbar móvil y sidebar colapsable
 
 ### 🛍️ Gestión de Productos
 - [x] Listado con paginación
@@ -302,6 +321,26 @@ picm-vite/
 - [x] Sistema de gestión de secciones reutilizable
 - [x] Componentes de gráficos interactivos
 - [x] Botones de descarga de PDF integrados
+- [x] UI modernizada con variables CSS, sidebar rediseñado y topbar móvil
+- [x] Páginas de login y recuperación con layout de dos paneles
+
+### 📱 Responsive Design
+- [x] Sidebar colapsable con menú hamburguesa en pantallas ≤ 900px
+- [x] Overlay de navegación en dispositivos móviles
+- [x] Grids y barras de acción adaptables en tablet y móvil
+- [x] Paginación y filtros optimizados para pantallas pequeñas
+- [x] Login y dashboard adaptados a distintos breakpoints (900px, 640px, 380px)
+
+### 🤖 Asistente Virtual
+- [x] Widget de chat flotante integrado en el dashboard
+- [x] Comunicación con el backend vía API REST
+- [x] Respuestas generadas con Google Gemini
+- [x] Historial de conversación persistente en localStorage
+- [x] Interfaz de mensajes con burbujas de usuario y bot
+
+### 📋 Auditoría (Backend Django)
+- [x] Registro de acciones del sistema para trazabilidad
+- [x] Integración con Django en el backend de la API
 
 ## 🚧 Estado del Desarrollo
 
@@ -320,16 +359,17 @@ picm-vite/
 - Sistema de notificaciones
 - Modales dinámicos y reutilizables
 - Gráficos interactivos con Chart.js
+- Diseño responsive completo (desktop, tablet y móvil)
+- Modernización de la UI (sidebar, topbar, login y variables CSS)
+- Chatbot de soporte con Google Gemini
+- Sistema de auditoría con Django en el backend
 
 ### 🔄 En Desarrollo
-- Optimización del responsive design
-- Mejoras en la experiencia de usuario
 - Validaciones adicionales
 - Refactorización de servicios (reducción de código duplicado)
 
 ### 📋 Pendiente
 - [ ] Módulo de Documentos adicionales
-- [ ] Optimización completa del responsive design
 - [ ] Testing automatizado
 - [ ] Documentación de API
 - [ ] Refactorización completa de servicios
@@ -339,12 +379,9 @@ picm-vite/
 
 ## ⚠️ Notas Importantes
 
-### Responsive Design
-> **⚠️ Advertencia**: El diseño responsive aún no está completamente implementado en todas las secciones. Se está trabajando en optimizar la experiencia en dispositivos móviles y tablets.
-
 ### Compatibilidad
 - **Navegadores**: Chrome, Firefox, Safari, Edge (versiones recientes)
-- **Dispositivos**: Desktop (completo), Tablet (parcial), Mobile (en desarrollo)
+- **Dispositivos**: Desktop, Tablet y Mobile (soporte responsive completo)
 
 ## 🤝 Contribución
 
