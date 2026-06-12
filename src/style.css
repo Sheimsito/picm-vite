@@ -10,7 +10,7 @@
 :root {
     /* Primary colors */
     --color-primary: #4F8CD9;
-    --color-primary-hover: #9cc5f4a8;;
+    --color-primary-hover: #3a7bc8;
   
     
     /* Backgrounds */
@@ -38,6 +38,3 @@ body {
     height: 100vh;
     background-color: var(--color-bg);
 }
-
-
-
